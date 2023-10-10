@@ -5,8 +5,6 @@ import Chat from '@/public/chat';
 import Group from '@/public/group';
 import Refresh from '@/public/refresh';
 
-
-
 function UserSidebar() {
   return (
     <div className='w-40 bg-black '>
