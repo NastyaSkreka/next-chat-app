@@ -1,3 +1,4 @@
+import SwitchButtons from '@/components/switch-buttons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Add from '@/public/add'
@@ -12,10 +13,7 @@ function ConversationSidebar() {
             <Input placeholder="Seach of Consersations"/>
             <Add/>
        </div>
-       <div className='flex flex-row gap-7 mb-7'>
-       <Button >PRIVATE</Button>
-       <Button>GROUP</Button>
-       </div>
+       <SwitchButtons/>
        <div className='flex flex-col space-y-5'>
         <div className='flex flex-row gap-5 items-center'>
             <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden"/>
