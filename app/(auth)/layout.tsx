@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react'
 
 function AuthLayout({ children }: PropsWithChildren) {
   return (
-    <div className='bg-red-500 w-full h-full flex flex-col'>
+    <div className='bg-black w-full h-screen flex flex-col items-center justify-center'>
         {children}
     </div>
   )
