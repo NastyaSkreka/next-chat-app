@@ -1,87 +1,116 @@
-"use client";
+"use client"
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { registerUser } from "@/config/auth";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Invalid email address.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  username: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.string().email("Invalid email address."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
-type FormSubmitHandler = (data: FormData) => void;
+interface FormData {
+  name: string;
+  username:string;
+  email: string;
+  password: string;
+}
 
-function SignUp({ handleSubmitForm }: { handleSubmitForm: FormSubmitHandler }) {
-  const { control, handleSubmit } = useForm({
+function SignUp() {
+
+    const router = useRouter();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: any) => {
-    handleSubmitForm(data);
+  const onSubmit = (data: FormData) => {
+    console.log("Данные из формы:", data);
+    registerUser(data.username, data.password);
+    router.push("/sign-in");
   };
 
   return (
-    <>
-      <div className="text-white text-lg mb-5 font-semibold">Sign Up</div>
+    <div>
+      <div className="text-white text-lg mb-5 font-semibold text-center">Sign Up</div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
-        <Controller
-          name="name"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label className="text-start text-slate-400">Name</label>
-              <Input type="text" placeholder="Enter your name" {...field} />
-            </div>
-          )}
-        />
-        <Controller
-          name="username"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label className="text-start text-slate-400">Username</label>
-              <Input type="text" placeholder="Enter your username" {...field} />
-            </div>
-          )}
-        />
-         <Controller
-          name="email"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label className="text-start text-slate-400">Email</label>
-              <Input type="text" placeholder="Enter your email" {...field} />
-            </div>
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label className="text-start text-slate-400">Password</label>
-              <Input type="password" placeholder="Enter your password" {...field} />
-            </div>
-          )}
-        />
+        <div>
+        <Label className="text-start text-slate-400">Name</Label>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <Input type="text" {...field} />
+            )}
+          />
+          <span className="text-red-500">
+            {errors.name && errors.name.message}
+          </span>
+        </div>
+        <div>
+        <Label className="text-start text-slate-400">UserName</Label>
+          <Controller
+            name="username"
+            control={control}
+            render={({ field }) => (
+              <Input type="text" {...field} />
+            )}
+          />
+          <span className="text-red-500">
+            {errors.username && errors.username.message}
+          </span>
+        </div>
+        <div>
+        <Label className="text-start text-slate-400">Email</Label>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <Input type="email" {...field} />
+            )}
+          />
+          <span className="text-red-500">
+            {errors.email && errors.email.message}
+          </span>
+        </div>
+        <div>
+        <Label className="text-start text-slate-400">Password</Label>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <Input type="password" {...field} />
+            )}
+          />
+          <span className="text-red-500">
+            {errors.password && errors.password.message}
+          </span>
+        </div>
         <div className="text-center">
-          <Button type="submit">Sign Up</Button>
+        <Button type="submit">Sign Up</Button>
         </div>
       </form>
-    </>
+
+      <div className="mt-7 text-center text-white hover:underline underline-offset-2">
+        <Link href="/sign-in">
+            I already have an account
+        </Link>
+      </div>
+    </div>
   );
 }
 
 export default SignUp;
+
