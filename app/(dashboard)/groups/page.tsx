@@ -1,12 +1,21 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import GroupSidebar from '../_components/group-sidebar'
-import ChatContainer from '../_components/chat-container'
+import GroupsContainer from '../_components/groups-container'
+import ParticipantsSidebar from '../_components/participants-sidebar'
 
 function Groups() {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const handleSidebarToggle = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
   return (
     <div className='flex w-full min-h-screen'>
-    <GroupSidebar />
-    <ChatContainer/>
+    <GroupSidebar onMessageClick={handleSidebarToggle}/>
+    <GroupsContainer/>
+    {isSidebarOpen && <ParticipantsSidebar />}
   </div>
   )
 }

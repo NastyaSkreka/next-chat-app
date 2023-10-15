@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input'
 
-function ChatContainer(){
+function GroupsContainer(){
     return (
         <div className='flex flex-col flex-1 w-full'>
         <div className='flex flex-row items-center h-[50px] px-10 bg-zinc-900 w-full'>
@@ -31,4 +31,4 @@ function ChatContainer(){
     )
 }
 
-export default ChatContainer;
+export default GroupsContainer;
