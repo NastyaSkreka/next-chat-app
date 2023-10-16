@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/redux/store';
-import { addMessage, Message } from '@/app/redux/features/messages/messagesSlice';
+import {  Message, MessagesState, addMessage } from '@/app/redux/features/messages/messagesSlice';
 import MessageOptions from '@/components/message-option';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,25 +10,24 @@ import { Input } from '@/components/ui/input';
 
 function GroupsContainer(){
     const dispatch = useDispatch();
-    const messages = useSelector((state: RootState) => state.messages);
+    const messages = useSelector((state: { messages: MessagesState }) => state.messages.messages);
 
     const [selectedMessage, setSelectedMessage] = useState(null)
     const [newMessageText, setNewMessageText] = useState('')
 
-    
     const handleAddMessage = () => {
         if (newMessageText) {
-          dispatch(addMessage(newMessageText));
+        dispatch(addMessage(newMessageText));
           setNewMessageText('');
         }
       };
       
       const handleEdit = (newText: string, messageId: number) => {
-        // Ранее обсужденная логика редактирования сообщений
+        
       };
     
       const handleDelete = (messageId: number) => {
-        // Ранее обсужденная логика удаления сообщений
+       
       };
 
     return (
@@ -52,6 +51,16 @@ function GroupsContainer(){
                       <p className='text-sm text-gray-400'>Message</p>
                   </div> 
               </div>
+             {
+                messages.map((message) => (
+                    <div key={message.id}>
+                        <MessageOptions message={message} />
+                    </div>
+                ))
+             }
+               {selectedMessage && (
+                    <div>Choose</div>
+                )}
              
           </div>
                  <div className="mt-auto flex gap-2">
