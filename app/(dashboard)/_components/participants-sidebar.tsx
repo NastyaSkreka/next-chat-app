@@ -1,6 +1,14 @@
+import { motion, AnimatePresence } from 'framer-motion';
+
 function ParticipantsSidebar() {
   return (
-    <div>
+    <AnimatePresence>
+    <motion.div
+      initial={{ x: 250 }}  
+      animate={{ x: 0 }}    
+      exit={{ x: 250 }}    
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       <div className="flex flex-row items-center h-[50px]  bg-black p-5 w-full">
         <p className="text-white flex-1">Participants</p>
       </div>
@@ -26,7 +34,8 @@ function ParticipantsSidebar() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
+    </AnimatePresence>
   );
 }
 

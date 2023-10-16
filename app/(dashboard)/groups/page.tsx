@@ -12,7 +12,7 @@ function Groups() {
   };
 
   return (
-    <div className="flex w-full min-h-screen">
+    <div className="flex overflow-hidden w-full min-h-screen">
       <GroupSidebar onMessageClick={handleSidebarToggle} />
       <GroupsContainer />
       {isSidebarOpen && <ParticipantsSidebar />}

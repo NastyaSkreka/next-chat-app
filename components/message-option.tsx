@@ -6,8 +6,6 @@ import {
   deleteMessage,
 } from "@/app/redux/features/messages/messagesSlice";
 import { Message } from "@/app/redux/features/messages/messagesSlice";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 
 interface MessageOptionsProps {
   message: Message;
@@ -74,7 +72,7 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message }) => {
                   </div>
                 </>
               ) : (
-                <>
+                <div className="flex flex-col gap-2">
                   <button
                     className="text-white"
                     onClick={() => setIsEditing(true)}
@@ -84,7 +82,7 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message }) => {
                   <button className="text-white" onClick={handleDelete}>
                     Delete
                   </button>
-                </>
+                </div>
               )}
             </div>
           </div>
