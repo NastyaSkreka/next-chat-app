@@ -1,31 +1,50 @@
-'use client';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface Message {
-  id: number;
+export interface Message {
+  id: string;
   text: string;
 }
 
-const initialState: Message[] = [];
+interface MessagesState {
+  messages: Message[];
+}
 
-const messageSlice = createSlice({
+const initialState: MessagesState = {
+  messages: [],
+};
+
+export const addMessage = createAsyncThunk('messages/addMessage', async (text: string) => {
+  const newMessage: Message = {
+    id: uuidv4(),
+    text,
+  };
+  return newMessage;
+});
+
+const messagesSlice = createSlice({
   name: 'messages',
   initialState,
   reducers: {
-    editMessage: (state, action: PayloadAction<{ id: number; newText: string }>) => {
+    editMessage: (state, action) => {
       const { id, newText } = action.payload;
-      const messageToEdit = state.find((message) => message.id === id);
+      const messageToEdit = state.messages.find((message) => message.id === id);
       if (messageToEdit) {
         messageToEdit.text = newText;
       }
     },
-    deleteMessage: (state, action: PayloadAction<number>) => {
+    deleteMessage: (state, action) => {
       const idToDelete = action.payload;
-      return state.filter((message) => message.id !== idToDelete);
+      state.messages = state.messages.filter((message) => message.id !== idToDelete);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(addMessage.fulfilled, (state, action) => {
+      state.messages.push(action.payload);
+    });
   },
 });
 
-export const { editMessage, deleteMessage } = messageSlice.actions;
-export default messageSlice.reducer;
+export const { editMessage, deleteMessage } = messagesSlice.actions;
+
+export default messagesSlice.reducer;
