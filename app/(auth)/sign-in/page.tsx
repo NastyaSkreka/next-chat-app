@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
@@ -16,14 +16,13 @@ const formSchema = z.object({
 });
 
 interface FormData {
-  username:string;
+  username: string;
   password: string;
 }
 
 function SignIn() {
-
-   const router = useRouter();
-   const [loginError, setLoginError] = useState<string | null>(null);
+  const router = useRouter();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     control,
@@ -33,41 +32,39 @@ function SignIn() {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit =  async (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log("Данные из формы:", data);
     const user = await authenticateUser(data.username, data.password);
     if (user) {
-        router.push("/conversations");
-      } else {
-        setLoginError("Login error. User not found. Please register.");
-      }
+      router.push("/conversations");
+    } else {
+      setLoginError("Login error. User not found. Please register.");
+    }
   };
 
   return (
     <div>
-      <div className="text-white text-lg mb-5 font-semibold text-center">Sign In</div>
+      <div className="text-white text-lg mb-5 font-semibold text-center">
+        Sign In
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
         <div>
-        <Label className="text-start text-slate-400">UserName</Label>
+          <Label className="text-start text-slate-400">UserName</Label>
           <Controller
             name="username"
             control={control}
-            render={({ field }) => (
-              <Input type="text" {...field} />
-            )}
+            render={({ field }) => <Input type="text" {...field} />}
           />
           <span className="text-red-500">
             {errors.username && errors.username.message}
           </span>
         </div>
         <div>
-        <Label className="text-start text-slate-400">Password</Label>
+          <Label className="text-start text-slate-400">Password</Label>
           <Controller
             name="password"
             control={control}
-            render={({ field }) => (
-              <Input type="password" {...field} />
-            )}
+            render={({ field }) => <Input type="password" {...field} />}
           />
           <span className="text-red-500">
             {errors.password && errors.password.message}
@@ -77,14 +74,12 @@ function SignIn() {
           <div className="text-red-500 text-center">{loginError}</div>
         )}
         <div className="text-center">
-        <Button type="submit">Sign In</Button>
+          <Button type="submit">Sign In</Button>
         </div>
       </form>
 
       <div className="mt-7 text-center text-white hover:underline underline-offset-2">
-        <Link href="/sign-up">
-            I want to register
-        </Link>
+        <Link href="/sign-up">I want to register</Link>
       </div>
     </div>
   );

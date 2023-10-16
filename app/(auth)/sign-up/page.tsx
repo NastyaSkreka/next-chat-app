@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
@@ -19,14 +19,13 @@ const formSchema = z.object({
 
 interface FormData {
   name: string;
-  username:string;
+  username: string;
   email: string;
   password: string;
 }
 
 function SignUp() {
-
-    const router = useRouter();
+  const router = useRouter();
 
   const {
     control,
@@ -44,73 +43,64 @@ function SignUp() {
 
   return (
     <div>
-      <div className="text-white text-lg mb-5 font-semibold text-center">Sign Up</div>
+      <div className="text-white text-lg mb-5 font-semibold text-center">
+        Sign Up
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
         <div>
-        <Label className="text-start text-slate-400">Name</Label>
+          <Label className="text-start text-slate-400">Name</Label>
           <Controller
             name="name"
             control={control}
-            render={({ field }) => (
-              <Input type="text" {...field} />
-            )}
+            render={({ field }) => <Input type="text" {...field} />}
           />
           <span className="text-red-500">
             {errors.name && errors.name.message}
           </span>
         </div>
         <div>
-        <Label className="text-start text-slate-400">UserName</Label>
+          <Label className="text-start text-slate-400">UserName</Label>
           <Controller
             name="username"
             control={control}
-            render={({ field }) => (
-              <Input type="text" {...field} />
-            )}
+            render={({ field }) => <Input type="text" {...field} />}
           />
           <span className="text-red-500">
             {errors.username && errors.username.message}
           </span>
         </div>
         <div>
-        <Label className="text-start text-slate-400">Email</Label>
+          <Label className="text-start text-slate-400">Email</Label>
           <Controller
             name="email"
             control={control}
-            render={({ field }) => (
-              <Input type="email" {...field} />
-            )}
+            render={({ field }) => <Input type="email" {...field} />}
           />
           <span className="text-red-500">
             {errors.email && errors.email.message}
           </span>
         </div>
         <div>
-        <Label className="text-start text-slate-400">Password</Label>
+          <Label className="text-start text-slate-400">Password</Label>
           <Controller
             name="password"
             control={control}
-            render={({ field }) => (
-              <Input type="password" {...field} />
-            )}
+            render={({ field }) => <Input type="password" {...field} />}
           />
           <span className="text-red-500">
             {errors.password && errors.password.message}
           </span>
         </div>
         <div className="text-center">
-        <Button type="submit">Sign Up</Button>
+          <Button type="submit">Sign Up</Button>
         </div>
       </form>
 
       <div className="mt-7 text-center text-white hover:underline underline-offset-2">
-        <Link href="/sign-in">
-            I already have an account
-        </Link>
+        <Link href="/sign-in">I already have an account</Link>
       </div>
     </div>
   );
 }
 
 export default SignUp;
-

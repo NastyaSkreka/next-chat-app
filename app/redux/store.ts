@@ -1,12 +1,11 @@
-'use client';
+"use client";
 
-import { configureStore } from '@reduxjs/toolkit';
-import messageReducer from './features/messages/messagesSlice'
+import { configureStore } from "@reduxjs/toolkit";
+import messageReducer from "./features/messages/messagesSlice";
 
 export const store = configureStore({
   reducer: {
     messages: messageReducer,
-
   },
 });
 

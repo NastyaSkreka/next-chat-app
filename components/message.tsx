@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function Message() {
-  return (
-     <h1 className='text-white'>hello</h1>
-  )
+  return <h1 className="text-white">hello</h1>;
 }
 
-export default Message
+export default Message;

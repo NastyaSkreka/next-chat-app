@@ -1,16 +1,14 @@
-import React from 'react'
-import ConversationSidebar from '../_components/conversation-sidebar'
-import PrivateContainer from '../_components/private-container'
-
+import React from "react";
+import ConversationSidebar from "../_components/conversation-sidebar";
+import PrivateContainer from "../_components/private-container";
 
 function Conversations() {
-    return (
-      <div className='flex w-full min-h-screen'>
-        <ConversationSidebar />
-        <PrivateContainer/>
-      </div>
-    )
-  }
-  
+  return (
+    <div className="flex w-full min-h-screen">
+      <ConversationSidebar />
+      <PrivateContainer />
+    </div>
+  );
+}
 
-export default Conversations
+export default Conversations;
