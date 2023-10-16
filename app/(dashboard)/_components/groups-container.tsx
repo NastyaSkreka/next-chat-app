@@ -1,11 +1,35 @@
 "use client"
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/app/redux/store';
+import { addMessage, Message } from '@/app/redux/features/messages/messagesSlice';
 import MessageOptions from '@/components/message-option';
-import { Input } from '@/components/ui/input'
-import { messages } from '@/data/messages';
-
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 
 function GroupsContainer(){
+    const dispatch = useDispatch();
+    const messages = useSelector((state: RootState) => state.messages);
+
+    const [selectedMessage, setSelectedMessage] = useState(null)
+    const [newMessageText, setNewMessageText] = useState('')
+
+    
+    const handleAddMessage = () => {
+        if (newMessageText) {
+          dispatch(addMessage(newMessageText));
+          setNewMessageText('');
+        }
+      };
+      
+      const handleEdit = (newText: string, messageId: number) => {
+        // Ранее обсужденная логика редактирования сообщений
+      };
+    
+      const handleDelete = (messageId: number) => {
+        // Ранее обсужденная логика удаления сообщений
+      };
 
     return (
         <div className='flex flex-col flex-1 w-full'>
@@ -28,14 +52,15 @@ function GroupsContainer(){
                       <p className='text-sm text-gray-400'>Message</p>
                   </div> 
               </div>
-              {messages.map((message) => (
-                    <div key={message.id}>
-                    <MessageOptions message={message} /> 
-                    </div>
-      ))}
+             
           </div>
-                 <div className="mt-auto">
-            <Input />
+                 <div className="mt-auto flex gap-2">
+            <Input 
+                value={newMessageText}
+                onChange={(e) => setNewMessageText(e.target.value)}
+                placeholder='type message...'
+            />
+            <Button onClick={handleAddMessage}>Send</Button>
           </div>
         </div>
       </div>
