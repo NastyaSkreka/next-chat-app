@@ -14,7 +14,7 @@ export const initialState: MessagesState = {
   messages: [],
 };
 
-const messagesSlice = createSlice({
+const groupMessagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
@@ -40,6 +40,6 @@ const messagesSlice = createSlice({
     },
   },
 });
-export const { editMessage, deleteMessage, addMessage } = messagesSlice.actions;
+export const { editMessage, deleteMessage, addMessage } = groupMessagesSlice.actions;
 
-export default messagesSlice.reducer;
+export default groupMessagesSlice.reducer;

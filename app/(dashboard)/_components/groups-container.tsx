@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   MessagesState,
   addMessage,
-} from "@/app/redux/features/messages/messagesSlice";
+} from "@/app/redux/features/messages/groupMessagesSlice";
 import MessageOptions from "@/components/message-option";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 function GroupsContainer() {
   const dispatch = useDispatch();
   const messages = useSelector(
-    (state: { messages: MessagesState }) => state.messages.messages,
+    (state: { group: MessagesState }) => state.group.messages,
   );
 
   const [newMessageText, setNewMessageText] = useState("");

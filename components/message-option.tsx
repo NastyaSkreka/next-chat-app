@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import {
   editMessage,
   deleteMessage,
-} from "@/app/redux/features/messages/messagesSlice";
-import { Message } from "@/app/redux/features/messages/messagesSlice";
+} from "@/app/redux/features/messages/groupMessagesSlice";
+import { Message } from "@/app/redux/features/messages/groupMessagesSlice";
 
 interface MessageOptionsProps {
   message: Message;
