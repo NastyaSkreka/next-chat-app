@@ -14,7 +14,15 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-    console.log(socket.id)
+    console.log("User Connected" , socket.id)
+
+    socket.on("sign-up", (data) => {
+        socket.join(data)
+        console.log(`User with ID: ${socket.id} name ${data}`)
+    })
+    socket.on("send_message",(data) => {
+        console.log(data)
+    })
 
     socket.on("disconnect", () => {
         console.log("User Disconnected", socket.id);

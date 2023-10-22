@@ -9,9 +9,10 @@ import { Message } from "@/app/redux/features/messages/groupMessagesSlice";
 
 interface MessageOptionsProps {
   message: Message;
+  username:string | null;
 }
 
-const MessageOptions: FC<MessageOptionsProps> = ({ message }) => {
+const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newMessageText, setNewMessageText] = useState(message.text);
 
@@ -41,7 +42,7 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message }) => {
       >
         <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
         <div>
-          <p className="text-lg font-semibold text-white mb-1">Name</p>
+          <p className="text-lg font-semibold text-white mb-1">{username}</p>
           <p className="text-sm text-gray-400">{message.text}</p>
         </div>
       </div>

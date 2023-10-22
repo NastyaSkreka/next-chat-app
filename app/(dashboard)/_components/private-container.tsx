@@ -5,9 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { io, Socket } from 'socket.io-client';
 
+const username = localStorage.getItem('username');
 
-function PrivateContainer() {
+const socketServer = io("http://localhost:3001");
+
+interface PrivateContainerProps {
+    socket: Socket;
+  }
+
+const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
+
     const dispatch = useDispatch();
     const messages = useSelector(
         (state: { private: MessagesState }) => state.private.messages,
@@ -15,11 +24,20 @@ function PrivateContainer() {
     
     const [newMessageText, setNewMessageText] = useState("");
 
-    const handleAddMessage = () => {
-        if (newMessageText) {
-          dispatch(addMessage(newMessageText));
-          setNewMessageText("");
-        }
+    const handleAddMessage =  () => {
+        if (!newMessageText) return; 
+          const messageData = {
+                author: username, 
+                text: newMessageText, 
+                time: 
+                    new Date(Date.now()).getHours() + 
+                    ":" + 
+                    new Date(Date.now()).getMinutes(), 
+          }
+         
+        dispatch(addMessage(messageData));
+        socket.emit("send_message",messageData );
+        setNewMessageText("");        
     };
 
   return (
@@ -31,7 +49,7 @@ function PrivateContainer() {
         <div className="flex flex-grow flex-col justify-end py-7 space-y-5">
           {messages.map((message) => (
             <div key={message.id}>
-              <MessageOptions message={message} />
+              <MessageOptions message={message} username={username}/>
             </div>
           ))}
         </div>

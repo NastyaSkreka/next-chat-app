@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 export interface Message {
   id: string;
   text: string;
+ 
 }
 
 export interface MessagesState {
@@ -19,11 +20,7 @@ const privateMessagesSlice = createSlice({
   initialState,
   reducers: {
     addMessage: (state, action) => {
-      const newMessage = {
-        id: uuidv4(),
-        text: action.payload,
-      };
-      state.messages.push(newMessage);
+        state.messages.push(action.payload);
     },
     editMessage: (state, action) => {
       const { id, newText } = action.payload;
