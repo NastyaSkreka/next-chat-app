@@ -20,7 +20,7 @@ io.on("connection", (socket) => {
         socket.join(data)
         console.log(`User with ID: ${socket.id} name ${data}`)
     })
-    socket.on("send_message",(data) => {
+    socket.on("send_message", (data) => {
         io.emit("receive_message", data);
     })
 

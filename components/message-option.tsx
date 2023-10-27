@@ -20,10 +20,13 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEdit = () => {
-    dispatch(editMessage({ id: message.id, newText: newMessageText }));
+    if (message.author === username) {
+      dispatch(editMessage({ id: message.id, newText: newMessageText }));
+    }
     setIsModalOpen(false);
     setIsEditing(true);
   };
+  
 
   const handleNewTextChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setNewMessageText(event.target.value);

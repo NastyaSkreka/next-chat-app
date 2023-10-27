@@ -9,8 +9,6 @@ import { io, Socket } from 'socket.io-client';
 
 const username = localStorage.getItem('username');
 
-const socketServer = io("http://localhost:3001");
-
 interface PrivateContainerProps {
     socket: Socket;
   }
@@ -20,7 +18,7 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
     const dispatch = useDispatch();
     const messages = useSelector(
         (state: { private: MessagesState }) => state.private.messages,
-      );
+      ); 
     
     const [newMessageText, setNewMessageText] = useState("");
 
@@ -41,14 +39,18 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
     };
 
     useEffect(() => {
-        socket.on("receive_message", (message) => {
-          dispatch(addMessage(message));
-        });
+        const handleReceiveMessage = (data:any) => {
+          if (data.author !== username) {
+            dispatch(addMessage(data));
+          }
+        };      
+        socket.on('receive_message', handleReceiveMessage);
         return () => {
-          socket.off("receive_message");
+          socket.off('receive_message', handleReceiveMessage);
         };
-      }, [socket, dispatch]);
-
+      }, [socket, dispatch, username]);
+      
+      
   return (
     <div className="flex flex-col flex-1 w-full">
       <div className="flex flex-row items-center h-[50px] px-10 bg-zinc-900 w-full">

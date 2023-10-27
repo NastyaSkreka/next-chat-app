@@ -21,21 +21,21 @@ const privateMessagesSlice = createSlice({
   initialState,
   reducers: {
     addMessage: (state, action) => {
-        state.messages.push(action.payload);
-    },
+        return {
+          ...state,
+          messages: [...state.messages, action.payload],
+        };
+      },
+      
     editMessage: (state, action) => {
-      const { id, newText } = action.payload;
-      const messageToEdit = state.messages.find((message) => message.id === id);
-      if (messageToEdit) {
-        messageToEdit.text = newText;
-      }
+        const messageToEdit = state.messages.find((message) => message.id === action.payload.id);
+        if (messageToEdit) {
+          messageToEdit.text = action.payload.newText;
+        }
     },
     deleteMessage: (state, action) => {
-      const idToDelete = action.payload;
-      state.messages = state.messages.filter(
-        (message) => message.id !== idToDelete,
-      );
-    },
+        state.messages = state.messages.filter((message) => message.id !== action.payload);
+      },
   },
 });
 export const { editMessage, deleteMessage, addMessage } = privateMessagesSlice.actions;
