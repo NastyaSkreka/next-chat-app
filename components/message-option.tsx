@@ -1,11 +1,8 @@
 "use client";
 import { ChangeEventHandler, FC, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  editMessage,
-  deleteMessage,
-} from "@/app/redux/features/messages/groupMessagesSlice";
 import { Message } from "@/app/redux/features/messages/groupMessagesSlice";
+import { deleteMessage, editMessage } from "@/app/redux/features/messages/privateMessageSlice";
 
 interface MessageOptionsProps {
   message: Message;
@@ -13,26 +10,22 @@ interface MessageOptionsProps {
 }
 
 const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
+    const dispatch = useDispatch();
     console.log(message)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newMessageText, setNewMessageText] = useState(message.text);
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleEdit = () => {
-    if (message.author === username) {
-      dispatch(editMessage({ id: message.id, newText: newMessageText }));
-    }
-    setIsModalOpen(false);
-    setIsEditing(true);
-  };
-  
-
   const handleNewTextChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setNewMessageText(event.target.value);
   };
 
-  const dispatch = useDispatch();
+  const handleEdit = () => {
+    dispatch(editMessage({ id: message.id, newText: newMessageText }));
+    setIsModalOpen(false);
+    setIsEditing(true);
+  };
 
   const handleDelete = () => {
     dispatch(deleteMessage(message.id));
@@ -40,41 +33,34 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
 
   return (
     <div>
-     {message.author === username ? (
-      <div
-        className="flex flex-row gap-5 items-center"
-        onClick={() => setIsModalOpen(true)}
-      >
+            {message.author === username ? (
         <div
-          className="w-16 h-16 rounded-full overflow-hidden"
-          style={{ background: "#3490dc" }} 
-        />
-        <div>
-          <p className="text-lg font-semibold text-white mb-1">You</p>
-          <p className="text-sm text-gray-400">{message.text}</p>
-          <p className="text-xs text-gray-400 mt-1">
-            {message.time} 
-          </p>
+            className="flex flex-row  gap-5 items-center"
+            onClick={() => setIsModalOpen(true)}
+        >
+            <div
+            className="w-16 h-16 bg-zinc-800 rounded-full overflow-hidden"
+            />
+            <div className="bg-neutral-400 px-5 py-1 rounded-lg text-white">
+            <p className="text-lg font-semibold mb-1">You</p>
+            <p className="text-sm">{message.text}</p>
+            <p className="text-xs mt-1">{message.time}</p>
+            </div>
         </div>
-      </div>
-    ) : (
-      <div
-        className="flex flex-row gap-5 items-center"
-        onClick={() => setIsModalOpen(true)}
-      >
+        ) : (
         <div
-          className="w-16 h-16 rounded-full overflow-hidden"
-          style={{ background: "#63b3ed" }} 
-        />
-        <div>
-          <p className="text-lg font-semibold text-white mb-1">{message.author}</p>
-          <p className="text-sm text-gray-400">{message.text}</p>
-          <p className="text-xs text-gray-400 mt-1">
-            {message.time} 
-          </p>
+            className="flex flex-row gap-5 items-center">
+            <div
+            className="w-16 h-16 bg-gray-300 rounded-full overflow-hidden"
+            />
+            <div className="bg-gray-300 p-3 rounded-lg">
+            <p className="text-lg font-semibold mb-1">{message.author}</p>
+            <p className="text-sm">{message.text}</p>
+            <p className="text-xs mt-1">{message.time}</p>
+            </div>
         </div>
-      </div>
-    )}
+        )}
+
 
       {isModalOpen && (
         <div>

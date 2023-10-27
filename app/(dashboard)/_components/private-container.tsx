@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io, Socket } from 'socket.io-client';
+import { v4 as uuidv4 } from 'uuid';
 
 const username = localStorage.getItem('username');
 
@@ -21,10 +22,12 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
       ); 
     
     const [newMessageText, setNewMessageText] = useState("");
+    const messageId = uuidv4();
 
     const handleAddMessage =  () => {
         if (!newMessageText) return; 
           const messageData = {
+                id: messageId, 
                 author: username, 
                 text: newMessageText, 
                 time: 
@@ -49,7 +52,7 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
           socket.off('receive_message', handleReceiveMessage);
         };
       }, [socket, dispatch, username]);
-      
+
       
   return (
     <div className="flex flex-col flex-1 w-full">
