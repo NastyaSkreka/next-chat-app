@@ -2,10 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
 export interface Message {
-  id: string;
-  text: string;
- 
-}
+    author: string;
+      id: string;
+      text: string;
+      time: string;
+    }
 
 export interface MessagesState {
   messages: Message[];
