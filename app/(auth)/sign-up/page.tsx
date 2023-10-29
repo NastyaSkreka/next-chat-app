@@ -39,13 +39,12 @@ function SignUp() {
   });
 
   const onSubmit = (data: FormData) => {
-    console.log("Данные из формы:", data);
     registerUser(data.username, data.password);
-    localStorage.setItem('username', data.username);    
+    localStorage.setItem('username', data.username);
+    socket.emit("newUser", { user: data.username, socketID: socket.id });
     router.push("/sign-in");
   };
 
-  
   return (
     <div>
       <div className="text-white text-lg mb-5 font-semibold text-center">

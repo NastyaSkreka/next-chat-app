@@ -13,20 +13,36 @@ const io = new Server(server, {
     }
 });
 
+const users = [];
+
 io.on("connection", (socket) => {
     console.log("User Connected" , socket.id)
 
-    socket.on("sign-up", (data) => {
+  /*  socket.on("sign-up", (data) => {
         socket.join(data)
         console.log(`User with ID: ${socket.id} name ${data}`)
-    })
+    }) */
+
     socket.on("send_message", (data) => {
+        console.log("inside send_message");
         io.emit("receive_message", data);
-    })
+    });
+
+    socket.on("getConnectedUsers", () => {
+        io.emit('connectedUsers', users);
+        console.log("Sending Online Users");
+    });
+
+
+    socket.on("newUser", (data) => {
+        users.push(data);
+        io.emit("responseNewUser", users);
+      });
+  
 
     socket.on("disconnect", () => {
         console.log("User Disconnected", socket.id);
-    })
+    });
 })
 
 server.listen(3001, () => {

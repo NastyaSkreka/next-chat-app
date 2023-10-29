@@ -1,14 +1,15 @@
 "use client"
 import { MessagesState, addMessage } from "@/app/redux/features/messages/privateMessageSlice";
+import { ConversationState } from "@/app/redux/features/users/conversationSlice";
 import MessageOptions from "@/components/message-option";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
+import SendMessageInput from "./send-message-input";
 
-const username = localStorage.getItem('username');
 
 interface PrivateContainerProps {
     socket: Socket;
@@ -17,43 +18,25 @@ interface PrivateContainerProps {
 const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
 
     const dispatch = useDispatch();
+    const activeUser = useSelector(
+        (state: { conversation: ConversationState }) => state.conversation.activeUser,
+    );
     const messages = useSelector(
-        (state: { private: MessagesState }) => state.private.messages,
-      ); 
+        (state: { private: MessagesState }) => state.private.messages.find((msgObj) => msgObj.userName === activeUser),
+    )?.messages || [];
     
-    const [newMessageText, setNewMessageText] = useState("");
-    const messageId = uuidv4();
-
-    const handleAddMessage =  () => {
-        if (!newMessageText) return; 
-          const messageData = {
-                id: messageId, 
-                author: username, 
-                text: newMessageText, 
-                time: 
-                    new Date(Date.now()).getHours() + 
-                    ":" + 
-                    new Date(Date.now()).getMinutes(), 
-          }
-         
-        dispatch(addMessage(messageData));
-        socket.emit("send_message",messageData );
-        setNewMessageText("");        
-    };
+    
 
     useEffect(() => {
-        const handleReceiveMessage = (data:any) => {
-          if (data.author !== username) {
-            dispatch(addMessage(data));
-          }
-        };      
-        socket.on('receive_message', handleReceiveMessage);
+        socket.on('receive_message', (data) => {
+            console.log("Inside receive_message ",data);
+            dispatch(addMessage({ messageData: data, recipient: activeUser }));
+        });
         return () => {
-          socket.off('receive_message', handleReceiveMessage);
+          socket.off('receive_message');
         };
-      }, [socket, dispatch, username]);
-
-      
+      }, [socket, dispatch, activeUser]);
+    
   return (
     <div className="flex flex-col flex-1 w-full">
       <div className="flex flex-row items-center h-[50px] px-10 bg-zinc-900 w-full">
@@ -64,19 +47,13 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
     
       {messages.map((message) => (
             <div key={message.id}>
-              <MessageOptions message={message} username={username}/>
+              <MessageOptions message={message} username={activeUser}/>
+            {/* {message.text} */}
             </div>
-          ))}
-        </div>
+        ))}
 
-        <div className="mt-auto flex gap-2">
-          <Input
-            value={newMessageText}
-            onChange={(e) => setNewMessageText(e.target.value)}
-            placeholder="type message..."
-          />
-          <Button onClick={handleAddMessage}>Send</Button>
         </div>
+        <SendMessageInput socket={socket} />
       </div>
     </div>
   );
