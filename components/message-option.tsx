@@ -1,8 +1,9 @@
 "use client";
 import { ChangeEventHandler, FC, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Message } from "@/app/redux/features/messages/groupMessagesSlice";
 import { deleteMessage, editMessage } from "@/app/redux/features/messages/privateMessageSlice";
+import { RootState } from "@/app/redux/store";
 
 interface MessageOptionsProps {
   message: Message;
@@ -10,12 +11,13 @@ interface MessageOptionsProps {
 }
 
 const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
-    const dispatch = useDispatch();
-    console.log(message)
+  const dispatch = useDispatch();
+  const recipient = useSelector((state: RootState) => state.conversation.activeUser);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newMessageText, setNewMessageText] = useState(message.text);
-
   const [isEditing, setIsEditing] = useState(false);
+
 
   const handleNewTextChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setNewMessageText(event.target.value);
@@ -28,7 +30,7 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
   };
 
   const handleDelete = () => {
-    dispatch(deleteMessage(message.id));
+    dispatch(deleteMessage({ recipient, msgId: message.id }));
   };
 
   return (

@@ -22,20 +22,18 @@ const privateMessagesSlice = createSlice({
   initialState,
   reducers: {
     addMessage: (state, action) => {
-        // const userMessages = state.messages.filter((messageObj) => messageObj.userName === action.payload.recipient);
         const findIndex = state.messages.findIndex((obj) => obj.userName === action.payload.recipient);
         console.log(findIndex);
-        if(findIndex < 0) return;
-        const msgs = state.messages[findIndex]?.messages || [];
-        if(!msgs) return;
-
-        const updatedMessages = {userName:action.payload.recipient, messages:  [...msgs, action.payload.messageData]};
-
-        const newMessages = [ ...state.messages, updatedMessages ];
-        return {
-            ...state,
-            messages: newMessages
-        }
+        if(findIndex < 0) {
+          const newMessage = {
+            userName: action.payload.recipient,
+            messages: [action.payload.messageData]
+          }
+          state.messages.push(newMessage);
+          return state;
+        };
+        state.messages[findIndex].messages.push(action.payload.messageData);
+        return state;
       },
       
     editMessage: (state, action) => {
@@ -46,8 +44,14 @@ const privateMessagesSlice = createSlice({
         }
     },
     deleteMessage: (state, action) => {
-        state.messages = state.messages.filter((message) => message.id !== action.payload);
-      },
+      
+      const messages = state.messages.find((msgObj) => msgObj.userName === action.payload.recipient)?.messages;
+      if(!messages?.length) return;
+
+      
+      messages.filter((msg) => msg.id === action.payload.msgId);
+      return state;
+    },
   },
 });
 export const { editMessage, deleteMessage, addMessage } = privateMessagesSlice.actions;

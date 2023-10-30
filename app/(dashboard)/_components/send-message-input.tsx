@@ -5,7 +5,7 @@ import { ConversationState } from '@/app/redux/features/users/conversationSlice'
 import { RootState } from '@/app/redux/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Socket } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,24 +28,23 @@ function SendMessageInput({ socket }: SendMessageInputProps) {
 
     const messages = useSelector((state: RootState) => state.private.messages).find((messageObj) => messageObj.userName === activeUser)?.messages || [];
 
-    const handleAddMessage =  () => {
-        if (!newMessageText) return;
-        console.log("Sedning Message");
-          const messageData = {
-                id: messageId, 
-                author: username,
-                text: newMessageText, 
-                time: 
-                    new Date(Date.now()).getHours() + 
-                    ":" + 
-                    new Date(Date.now()).getMinutes(), 
-          }
-         
-        dispatch(addMessage({messageData, recipient: activeUser }));
-        console.log(messages);
-        socket.emit("send_message",messageData );
-        setNewMessageText("");        
-    };
+    const handleAddMessage = () => {
+      if (!newMessageText) return;
+      const messageData = {
+            id: messageId, 
+            author: username,
+            text: newMessageText, 
+            time: 
+                new Date(Date.now()).getHours() + 
+                ":" + 
+                new Date(Date.now()).getMinutes(), 
+      }
+      dispatch(addMessage({messageData, recipient: activeUser }));
+      console.log(messages);
+      socket.emit("send_message",messageData );
+      setNewMessageText("");
+  };
+  
   return (
     <div className="mt-auto flex gap-2">
         <Input
