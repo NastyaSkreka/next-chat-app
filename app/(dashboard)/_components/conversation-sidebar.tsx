@@ -7,16 +7,13 @@ import { Socket } from 'socket.io-client';
 import { useDispatch, useSelector } from "react-redux";
 import { ConversationState, setActiveUser, setSidebarData } from "@/app/redux/features/users/conversationSlice";
 
-interface User {
-    user: string;
-    socketID: string;
-}
 
 interface PrivateContainerProps {
     socket: Socket;
 }
 
 const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
+    const [searchInput, setSearchInput] = useState<string>("");
     const dispatch = useDispatch();
     const activeUser = useSelector(
         (state: { conversation: ConversationState }) => state.conversation.activeUser,
@@ -26,7 +23,6 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
     ); 
     
     console.log(sidebarData)
-
     useEffect(() => {
         socket.on('connectedUsers', (users) => dispatch(setSidebarData(users)));
         socket.emit('getConnectedUsers', null);
@@ -45,17 +41,28 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
     const handleSetActiveUser = (user:any) => {
         dispatch(setActiveUser(user));
     };
+
+    const handleSearchInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setSearchInput(e.target.value);
+      };
       
+    const filteredSidebarData = sidebarData.filter((item) =>
+    item.user.toLowerCase().includes(searchInput.toLowerCase())
+    );
+
     return (
         <div className="w-[300px] bg-black p-5">
             <div className="flex flex-row gap-3 mb-7">
-                <Input placeholder="Search for Conversations" />
+                <Input placeholder="Search for Conversations" 
+                value={searchInput}
+                onChange={handleSearchInputChange}
+                />
                 <Add />
             </div>
             <SwitchButtons />
 
             <div className="flex flex-col space-y-5 ">
-                {sidebarData.map((item) => (
+                {filteredSidebarData.map((item) => (
                     <div
                         key={item.socketID}
                         className={`flex flex-row gap-5 items-center

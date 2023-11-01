@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
-
 export interface Message {
     author: string;
     id: string;
@@ -43,12 +41,10 @@ const privateMessagesSlice = createSlice({
           messageToEdit.text = action.payload.newText;
         }
     },
-    deleteMessage: (state, action) => {
-      
+    deleteMessage: (state, action) => {     
       const messages = state.messages.find((msgObj) => msgObj.userName === action.payload.recipient)?.messages;
       if(!messages?.length) return;
-
-      
+     
       messages.filter((msg) => msg.id === action.payload.msgId);
       return state;
     },

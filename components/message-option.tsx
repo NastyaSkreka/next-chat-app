@@ -36,10 +36,23 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
   return (
     <div>
             {message.author === username ? (
-        <div
+                 <div
+                 className="flex flex-row gap-5 items-center">
+                 <div
+                 className="w-16 h-16 bg-gray-300 rounded-full overflow-hidden"
+                 />
+                 <div className="bg-gray-300 p-3 rounded-lg">
+                 <p className="text-lg font-semibold mb-1">{message.author}</p>
+                 <p className="text-sm">{message.text}</p>
+                 <p className="text-xs mt-1">{message.time}</p>
+                 </div>
+             </div>
+      
+        ) : (
+            <div
             className="flex flex-row  gap-5 items-center"
             onClick={() => setIsModalOpen(true)}
-        >
+            >
             <div
             className="w-16 h-16 bg-zinc-800 rounded-full overflow-hidden"
             />
@@ -48,21 +61,8 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
             <p className="text-sm">{message.text}</p>
             <p className="text-xs mt-1">{message.time}</p>
             </div>
-        </div>
-        ) : (
-        <div
-            className="flex flex-row gap-5 items-center">
-            <div
-            className="w-16 h-16 bg-gray-300 rounded-full overflow-hidden"
-            />
-            <div className="bg-gray-300 p-3 rounded-lg">
-            <p className="text-lg font-semibold mb-1">{message.author}</p>
-            <p className="text-sm">{message.text}</p>
-            <p className="text-xs mt-1">{message.time}</p>
             </div>
-        </div>
         )}
-
 
       {isModalOpen && (
         <div>

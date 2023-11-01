@@ -48,7 +48,6 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
       {messages.map((message) => (
             <div key={message.id}>
               <MessageOptions message={message} username={activeUser}/>
-            {/* {message.text} */}
             </div>
         ))}
 
