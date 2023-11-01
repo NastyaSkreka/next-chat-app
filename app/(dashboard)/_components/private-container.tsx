@@ -2,18 +2,16 @@
 import { MessagesState, addMessage } from "@/app/redux/features/messages/privateMessageSlice";
 import { ConversationState } from "@/app/redux/features/users/conversationSlice";
 import MessageOptions from "@/components/message-option";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Socket } from 'socket.io-client';
-import { v4 as uuidv4 } from 'uuid';
 import SendMessageInput from "./send-message-input";
 
 
 interface PrivateContainerProps {
     socket: Socket;
   }
+  const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
 const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
 
@@ -25,12 +23,11 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
         (state: { private: MessagesState }) => state.private.messages.find((msgObj) => msgObj.userName === activeUser),
     )?.messages || [];
     
-    
-
     useEffect(() => {
         socket.on('receive_message', (data) => {
-            console.log("Inside receive_message ",data);
+            if (data.author !== username){
             dispatch(addMessage({ messageData: data, recipient: activeUser }));
+            }
         });
         return () => {
           socket.off('receive_message');

@@ -6,14 +6,18 @@ import Add from "@/public/add";
 import { Socket } from 'socket.io-client';
 import { useDispatch, useSelector } from "react-redux";
 import { ConversationState, setActiveUser, setSidebarData } from "@/app/redux/features/users/conversationSlice";
+import GroupModal from "@/components/group-modal";
 
 
 interface PrivateContainerProps {
     socket: Socket;
 }
 
+const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
+
 const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
     const [searchInput, setSearchInput] = useState<string>("");
+    const [isModalOpen, setModalOpen] = useState(false);
     const dispatch = useDispatch();
     const activeUser = useSelector(
         (state: { conversation: ConversationState }) => state.conversation.activeUser,
@@ -23,20 +27,32 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
     ); 
     
     console.log(sidebarData)
+
     useEffect(() => {
-        socket.on('connectedUsers', (users) => dispatch(setSidebarData(users)));
+        socket.on('connectedUsers', (users) => {
+          const filteredUsers = users.filter((user:any) => user.user !== username);
+          dispatch(setSidebarData(filteredUsers));
+        });
         socket.emit('getConnectedUsers', null);
         socket.on("responseNewUser", (data) => {
-            dispatch(setSidebarData(data));
+          const filteredData = data.filter((user:any) => user.user !== username);
+          dispatch(setSidebarData(filteredData));
         });
-
+    
         return () => {
-            // socket.off('getConnectedUsers');
-            socket.off('responseNewUser');
-            socket.off('connectedUsers');
-        }
-    }, [socket]);
+          // socket.off('getConnectedUsers');
+          socket.off('responseNewUser');
+          socket.off('connectedUsers');
+        };
+      }, [socket, username]);
 
+    const handleOpenModal = () => {
+        setModalOpen(true);
+    };
+    
+      const handleCloseModal = () => {
+        setModalOpen(false);
+    };
   
     const handleSetActiveUser = (user:any) => {
         dispatch(setActiveUser(user));
@@ -46,10 +62,10 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
         setSearchInput(e.target.value);
       };
       
-    const filteredSidebarData = sidebarData.filter((item) =>
-    item.user.toLowerCase().includes(searchInput.toLowerCase())
+      const filteredSidebarData = sidebarData.filter((item) =>
+      item.user.toLowerCase().includes(searchInput.toLowerCase()) 
     );
-
+    
     return (
         <div className="w-[300px] bg-black p-5">
             <div className="flex flex-row gap-3 mb-7">
@@ -57,7 +73,10 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
                 value={searchInput}
                 onChange={handleSearchInputChange}
                 />
-                <Add />
+                <div onClick={handleOpenModal}>
+                <Add/>
+                </div>
+                {isModalOpen && <GroupModal onClose={handleCloseModal} />}
             </div>
             <SwitchButtons />
 
