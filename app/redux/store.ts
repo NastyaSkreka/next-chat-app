@@ -4,6 +4,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import groupeMessageReducer from "./features/messages/groupMessagesSlice";
 import privateMessageReducer from "./features/messages/privateMessageSlice"
 import conversationReducer from "./features/users/conversationSlice"
+import groupsReducer from "./features/users/groupSlice"
 
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
         group: groupeMessageReducer,
         private: privateMessageReducer, 
         conversation: conversationReducer,
+        groups: groupsReducer
     }),
   });
 

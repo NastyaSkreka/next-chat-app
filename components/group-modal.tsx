@@ -1,16 +1,20 @@
-import { ConversationState, setSidebarData } from '@/app/redux/features/users/conversationSlice';
+import { ConversationState} from '@/app/redux/features/users/conversationSlice';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from './ui/button';
+import { addGroup } from '@/app/redux/features/users/groupSlice';
 
 interface GroupModalProps {
   onClose: () => void;
   activeUsers: string[];
 }
 
+const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
+
 const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
+    const dispatch = useDispatch();
   const [groupName, setGroupName] = useState('');
-  const [selectedUsers, setSelectedUsers] = useState<{ [key: string]: boolean }>({});
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const users = useSelector(
     (state: { conversation: ConversationState }) => state.conversation.sidebarData,
@@ -21,15 +25,28 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
     setGroupName(event.target.value);
   };
 
-  const handleParticipantChange = (username: string) => {
-    setSelectedUsers((prevSelectedUsers) => ({
-      ...prevSelectedUsers,
-      [username]: !prevSelectedUsers[username],
-    }));
+  const handleParticipantChange = (username) => {
+    if (selectedUsers.includes(username)) {
+      setSelectedUsers(selectedUsers.filter((user) => user !== username));
+    } else {
+      setSelectedUsers([...selectedUsers, username]);
+    }
   };
   
   
+  
   const handleSubmit = () => {
+
+    const newGroup = {
+        name: groupName, 
+        creator: username, 
+        members: [...selectedUsers, username], 
+    };
+
+    dispatch(addGroup(newGroup))
+
+    console.log(newGroup)
+
     onClose();
   };
 
