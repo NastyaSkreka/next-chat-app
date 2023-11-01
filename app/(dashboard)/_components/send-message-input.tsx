@@ -44,16 +44,18 @@ function SendMessageInput({ socket }: SendMessageInputProps) {
       socket.emit("send_message",messageData );
       setNewMessageText("");
   };
-  
-  return (
-    <div className="mt-auto flex gap-2">
-        <Input
-        value={newMessageText}
-        onChange={(e) => setNewMessageText(e.target.value)}
-        placeholder="type message..."
-        />
-        <Button onClick={handleAddMessage}>Send</Button>
-    </div>
+
+  return ( 
+    activeUser &&  (
+        <div className="mt-auto flex gap-2">
+            <Input
+            value={newMessageText}
+            onChange={(e) => setNewMessageText(e.target.value)}
+            placeholder="type message..."
+            />
+            <Button onClick={handleAddMessage}>Send</Button>
+        </div>
+    )
   )
 }
 
