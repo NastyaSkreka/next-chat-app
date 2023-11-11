@@ -50,7 +50,7 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
         setModalOpen(true);
     };
     
-      const handleCloseModal = () => {
+    const handleCloseModal = () => {
         setModalOpen(false);
     };
   
@@ -76,7 +76,7 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
                 <div onClick={handleOpenModal}>
                 <Add/>
                 </div>
-                {isModalOpen && <GroupModal onClose={handleCloseModal} />}
+                {isModalOpen && <GroupModal  socket={socket} onClose={handleCloseModal} />}
             </div>
             <SwitchButtons />
 
