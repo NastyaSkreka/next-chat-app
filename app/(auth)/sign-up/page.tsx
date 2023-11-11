@@ -9,9 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { io, Socket } from 'socket.io-client';
 
-const socket: Socket = io('http://localhost:3001');
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -41,7 +39,7 @@ function SignUp() {
   const onSubmit = (data: FormData) => {
     registerUser(data.username, data.password);
     localStorage.setItem('username', data.username);
-    socket.emit("newUser", { user: data.username, socketID: socket.id });
+    // socket.emit("newUser", { user: data.username, socketID: socket.id });
     router.push("/sign-in");
   };
 

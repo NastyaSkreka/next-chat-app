@@ -1,61 +1,76 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import Add from "@/public/add";
 import SwitchButtons from "@/components/switch-buttons";
-import { useSelector,  useDispatch} from "react-redux";
-import { addGroup } from "@/app/redux/features/users/groupSlice";
-import { io, Socket } from 'socket.io-client';
-
- const socket: Socket = io('http://localhost:3001');
+import { useSocketContext } from "@/providers/socket-provider";
+import GroupModal from "@/components/group-modal";
 
  const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
 interface GroupSidebarProps {
   onMessageClick: () => void;
-  socket: Socket;
 }
 
 type Group = {
     id: string;
     name: string;
-    
   };
 
 const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
-  /*  const groups = useSelector(
-        (state: { groups:any}) => state.groups.groups,
-    );  */
-
+    const { socket } = useSocketContext();
     const [groups, setGroups] = useState<Group[]>([]);
+    const [searchInput, setSearchInput] = useState<string>("");
+    const [isModalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         socket.on('newGroup', (newGroup) => {
-          if (newGroup.members.some(member => member.user === username)) {
-            setGroups(newGroup);
+          console.log('inside newGroup', newGroup);
+          const groupExists = groups.find((group) => group.name === newGroup.name);
+          if(!groupExists) {
+            setGroups(prev => [newGroup, ...prev]);
           }
         });
     
         return () => {
           socket.off('newGroup');
         };
-      }, [username]);
+      }, [username, socket]);
       
 
-    console.log("groups", groups)
+    const handleSearchInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+      setSearchInput(e.target.value);
+    };
+
+    const handleOpenModal = () => {
+      setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+};
 
     return (
     <div className="w-[300px] bg-black p-5">
       <div className="flex flex-row gap-3 mb-7">
-        <Input placeholder="Seach of Consersations" />
-        <Add />
+      <div className="flex flex-row gap-3 mb-7">
+          <Input placeholder="Search for Conversations" 
+          value={searchInput}
+          onChange={handleSearchInputChange}
+          />
+          <div onClick={handleOpenModal}>
+          <Add/>
+          </div>
+          {isModalOpen && <GroupModal onClose={handleCloseModal} />}
+      </div>
       </div>
       <SwitchButtons />
       <div className="flex flex-col space-y-5">
         {
           groups.map((group:any) => (
             <div
-            key={group.id}
+            key={group.name}
             className="flex flex-row gap-5 items-center cursor-pointer"
             onClick={onMessageClick}
             >
@@ -65,10 +80,9 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
                 <p className="text-sm text-gray-400">Creator {group.creator}</p>
                 {
                     group.members.map((member) => (
-                        <p className="text-sm text-gray-400">Members {member.user} </p> 
+                        <p className="text-sm text-gray-400" key={member.user}>Members {member.user} </p> 
                     ))
                 }
-               
             </div>
             </div>
           ))  

@@ -1,14 +1,17 @@
-import UserSidebar from "@/app/(dashboard)/_components/user-sidebar";
+'use client';
+
 import React, { PropsWithChildren } from "react";
-import GroupSidebar from "./_components/group-sidebar";
-import Message from "@/components/message";
+import UserSidebar from "@/app/(dashboard)/_components/user-sidebar";
+import SocketProvider from "../../providers/socket-provider";
 
 function DashboardLayout({ children }: PropsWithChildren) {
   return (
-    <div className="flex bg-black w-full">
-      <UserSidebar />
-      {children}
-    </div>
+    <SocketProvider>
+      <div className="flex bg-black w-full">
+        <UserSidebar />
+        {children}
+      </div>
+    </SocketProvider>
   );
 }
 

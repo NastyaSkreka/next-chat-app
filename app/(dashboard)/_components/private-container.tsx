@@ -4,16 +4,13 @@ import { ConversationState } from "@/app/redux/features/users/conversationSlice"
 import MessageOptions from "@/components/message-option";
 import { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Socket } from 'socket.io-client';
 import SendMessageInput from "./send-message-input";
+import { useSocketContext } from "@/providers/socket-provider";
 
 
-interface PrivateContainerProps {
-    socket: Socket;
-  }
-  const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
+const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
-const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
+const PrivateContainer: React.FC = () =>  {
 
     const dispatch = useDispatch();
     const activeUser = useSelector(
@@ -22,6 +19,8 @@ const PrivateContainer: React.FC<PrivateContainerProps> = ({ socket }) =>  {
     const messages = useSelector(
         (state: { private: MessagesState }) => state.private.messages.find((msgObj) => msgObj.userName === activeUser),
     )?.messages || [];
+
+    const { socket } = useSocketContext();
     
     useEffect(() => {
         socket.on('receive_message', (data) => {

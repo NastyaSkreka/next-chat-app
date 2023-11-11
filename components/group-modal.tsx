@@ -3,30 +3,26 @@ import { ConversationState} from '@/app/redux/features/users/conversationSlice';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from './ui/button';
-import { io, Socket } from 'socket.io-client';
 import { addGroup } from '@/app/redux/features/users/groupSlice';
+import { useSocketContext } from '@/providers/socket-provider';
 
-// const socket: Socket = io('http://localhost:3001');
 
 interface GroupModalProps {
   onClose: () => void;
-  activeUsers: string[];
-  socket: Socket;
+  activeUsers?: string[];
 }
 
 const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
-const GroupModal: React.FC<GroupModalProps> = ({ onClose, socket }) => {
+const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
     const [groupName, setGroupName] = useState('');
     const [selectedUsers, setSelectedUsers] = useState([]);
 
-    console.log("selectedUsers", selectedUsers)
+    const { socket } = useSocketContext();
 
     const users = useSelector(
       (state: { conversation: ConversationState }) => state.conversation.sidebarData,
     );
-
-    console.log("users", users)
   
     const handleGroupNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setGroupName(event.target.value);
@@ -44,10 +40,8 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose, socket }) => {
         const newGroup = {
           name: groupName,
           creator: username, 
-          members: selectedUsers,
+          members: [...selectedUsers, { user: username }],
         };
-        console.log("members", selectedUsers)
-        console.log("newGroup", newGroup)
     
         socket.emit('createGroup', newGroup);
     
@@ -73,10 +67,10 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose, socket }) => {
   
           {users.map((item) => (
             <div
-              key={item.socketID}
+              key={item.socketId}
               onClick={() => handleUserSelection(item)}
               className={`flex items-center ${
-                selectedUsers.includes(item.socketID) ? 'bg-neutral-900 text-white rounded-lg' : ''
+                selectedUsers.includes(item.socketId) ? 'bg-neutral-900 text-white rounded-lg' : ''
               }`}
             >
               <div className="flex w-full flex-row gap-5 items-center cursor-pointer">

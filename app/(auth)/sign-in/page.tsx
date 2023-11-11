@@ -9,9 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { io, Socket } from 'socket.io-client';
-
-const socket: Socket = io('http://localhost:3001');
 
 const formSchema = z.object({
   username: z.string().min(2, "Name must be at least 2 characters."),

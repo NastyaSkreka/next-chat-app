@@ -33,7 +33,7 @@ function GroupsContainer() {
         <div className="flex flex-grow flex-col justify-end py-7 space-y-5">
           {messages.map((message) => (
             <div key={message.id}>
-              <MessageOptions message={message} />
+              <MessageOptions username={localStorage.getItem('username') || ''} message={message} />
             </div>
           ))}
         </div>

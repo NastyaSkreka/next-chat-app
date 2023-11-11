@@ -14,14 +14,7 @@ const io = new Server(server, {
     }
 });
 
-const users = [
-    {
-        user: "Nastya", id: '4738974'
-    },
-    {
-        user: "Lena", id: '4738975'
-    }
-];
+const users = [];
 const groups = []; 
 
 
@@ -34,13 +27,21 @@ io.on("connection", (socket) => {
     });
 
     socket.on("getConnectedUsers", () => {
-        io.emit('connectedUsers', users);
+        socket.emit('connectedUsers', users);
         console.log("Sending Online Users");
     });
 
-    socket.on("newUser", (data) => {
-        users.push(data);
-        console.log(data);
+    socket.on("newUser", (username) => {
+        const isFound = users.find((user) => username === user.user);
+        const newUserData = { user: username, socketId: socket.id };
+
+        if(isFound) {
+            users.map((user) => user.user === newUserData.user ? newUserData : user);
+            return io.emit("responseNewUser", users);
+        }
+
+        users.push(newUserData);
+        console.log(users);
         io.emit("responseNewUser", users);
       });
   
@@ -53,14 +54,21 @@ io.on("connection", (socket) => {
         console.log('inside createGroup');
 
         console.log(newGroup);
+
+        socket.emit('newGroup', newGroup, error => {
+            console.log(error);
+        });
       
       
         newGroup.members.forEach((member) => {
-            io.to(member.socketID).emit('newGroup', newGroup, (error) => {
+            const userSocketId = users.find((user) => user.user === member.user).socketId;
+            if(!userSocketId) return;
+
+            socket.to(userSocketId).emit('newGroup', newGroup, (error) => {
                 if (error) {
-                    console.error(`Error sending 'newGroup' event to ${member.socketID}:`, error);
+                    console.error(`Error sending 'newGroup' event to ${userSocketId}:`, error);
                 } else {
-                    console.log(`'newGroup' event sent successfully to ${member.socketID}`);
+                    console.log(`'newGroup' event sent successfully to ${userSocketId}`);
                 }
                 console.log("newGroup", newGroup)
             });
@@ -70,7 +78,7 @@ io.on("connection", (socket) => {
       
   
     socket.on("disconnect", (socket) => {
-        console.log("User Disconnected", socket.id);
+        console.log("User Disconnected", socket);
         users.filter((user) => user.socketID !== socket.id);
     });
 })

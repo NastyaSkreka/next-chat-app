@@ -3,19 +3,11 @@ import React, { useEffect, useState } from "react";
 import SwitchButtons from "@/components/switch-buttons";
 import { Input } from "@/components/ui/input";
 import Add from "@/public/add";
-import { Socket } from 'socket.io-client';
 import { useDispatch, useSelector } from "react-redux";
 import { ConversationState, setActiveUser, setSidebarData } from "@/app/redux/features/users/conversationSlice";
 import GroupModal from "@/components/group-modal";
 
-
-interface PrivateContainerProps {
-    socket: Socket;
-}
-
-const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
-
-const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
+const ConversationSidebar: React.FC = () => {
     const [searchInput, setSearchInput] = useState<string>("");
     const [isModalOpen, setModalOpen] = useState(false);
     const dispatch = useDispatch();
@@ -25,26 +17,6 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
     const sidebarData = useSelector(
     (state: { conversation: ConversationState }) => state.conversation.sidebarData,
     ); 
-    
-    console.log(sidebarData)
-
-    useEffect(() => {
-        socket.on('connectedUsers', (users) => {
-          const filteredUsers = users.filter((user:any) => user.user !== username);
-          dispatch(setSidebarData(filteredUsers));
-        });
-        socket.emit('getConnectedUsers', null);
-        socket.on("responseNewUser", (data) => {
-          const filteredData = data.filter((user:any) => user.user !== username);
-          dispatch(setSidebarData(filteredData));
-        });
-    
-        return () => {
-          // socket.off('getConnectedUsers');
-          socket.off('responseNewUser');
-          socket.off('connectedUsers');
-        };
-      }, [socket, username]);
 
     const handleOpenModal = () => {
         setModalOpen(true);
@@ -76,14 +48,14 @@ const ConversationSidebar: React.FC<PrivateContainerProps> = ({ socket }) => {
                 <div onClick={handleOpenModal}>
                 <Add/>
                 </div>
-                {isModalOpen && <GroupModal  socket={socket} onClose={handleCloseModal} />}
+                {isModalOpen && <GroupModal onClose={handleCloseModal} />}
             </div>
             <SwitchButtons />
 
             <div className="flex flex-col space-y-5 ">
-                {filteredSidebarData.map((item) => (
+                {filteredSidebarData.map((item, index) => (
                     <div
-                        key={item.socketID}
+                        key={index}
                         className={`flex flex-row gap-5 items-center
                         ${ item.user === activeUser ? 'bg-neutral-900 text-white rounded-lg' : ''}`}
                         onClick={() => handleSetActiveUser(item.user)}

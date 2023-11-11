@@ -3,7 +3,16 @@ interface User {
   password: string;
 }
 
-const users: User[] = [];
+const users: User[] = [
+  {
+    username: "sherif",
+    password: "123123123",
+  },
+  {
+    username: "Nastya",
+    password: "123123123",
+  }
+];
 
 export const registerUser = (username: string, password: string): void => {
   const user: User = { username, password };
@@ -14,8 +23,11 @@ export const authenticateUser = (
   username: string,
   password: string,
 ): User | null => {
-  const user: User | undefined = users.find(
+  const user = users.find(
     (user) => user.username === username && user.password === password,
   );
-  return user || null;
+  if(!user) return null;
+  
+  localStorage.setItem('username', user?.username);
+  return user;
 };

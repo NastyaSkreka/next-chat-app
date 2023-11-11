@@ -5,19 +5,15 @@ import { ConversationState } from '@/app/redux/features/users/conversationSlice'
 import { RootState } from '@/app/redux/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useSocketContext } from '@/providers/socket-provider';
 import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Socket } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
 
-interface SendMessageInputProps {
-    socket: Socket;
-};
-
 const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
-function SendMessageInput({ socket }: SendMessageInputProps) {
+function SendMessageInput() {
     const [newMessageText, setNewMessageText] = useState("");
     const messageId = uuidv4();
 
@@ -25,6 +21,8 @@ function SendMessageInput({ socket }: SendMessageInputProps) {
     const activeUser = useSelector(
         (state: { conversation: ConversationState }) => state.conversation.activeUser,
     );
+
+    const { socket } = useSocketContext();
 
     const messages = useSelector((state: RootState) => state.private.messages).find((messageObj) => messageObj.userName === activeUser)?.messages || [];
 
