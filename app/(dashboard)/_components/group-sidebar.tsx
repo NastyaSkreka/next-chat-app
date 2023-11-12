@@ -6,6 +6,8 @@ import Add from "@/public/add";
 import SwitchButtons from "@/components/switch-buttons";
 import { useSocketContext } from "@/providers/socket-provider";
 import GroupModal from "@/components/group-modal";
+import { useDispatch, useSelector } from "react-redux";
+import { GroupState, addGroup, selectGroup } from "@/app/redux/features/users/groupSlice";
 
  const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
@@ -20,16 +22,27 @@ type Group = {
 
 const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
     const { socket } = useSocketContext();
-    const [groups, setGroups] = useState<Group[]>([]);
     const [searchInput, setSearchInput] = useState<string>("");
     const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+    const dispatch = useDispatch()
+    const groups = useSelector(
+        (state: { groups: GroupState }) => state.groups.groups,
+    ); 
+
+    const handleGroupClick = (group) => {
+        dispatch(selectGroup(group));
+        onMessageClick(group);
+        setSelectedGroup(group.name);
+        console.log(group, "click")
+    };
 
     useEffect(() => {
         socket.on('newGroup', (newGroup) => {
           console.log('inside newGroup', newGroup);
           const groupExists = groups.find((group) => group.name === newGroup.name);
           if(!groupExists) {
-            setGroups(prev => [newGroup, ...prev]);
+           dispatch(addGroup(newGroup));
           }
         });
     
@@ -71,42 +84,21 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
           groups.map((group:any) => (
             <div
             key={group.name}
-            className="flex flex-row gap-5 items-center cursor-pointer"
-            onClick={onMessageClick}
+            className={`flex flex-row gap-5 items-center cursor-pointer ${
+                selectedGroup === group.name ? 'bg-neutral-900 text-white rounded-lg' : ""
+            }`}
+            onClick={() => {
+                handleGroupClick(group);
+              }}
             >
             <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
             <div>
              <p className="text-lg font-semibold text-white mb-1">{group.name}</p>
-                <p className="text-sm text-gray-400">Creator {group.creator}</p>
-                {
-                    group.members.map((member) => (
-                        <p className="text-sm text-gray-400" key={member.user}>Members {member.user} </p> 
-                    ))
-                }
+             <p className="text-lg font-semibold text-white mb-1">Message</p>
             </div>
             </div>
           ))  
         }
-            <div
-            className="flex flex-row gap-5 items-center cursor-pointer"
-            onClick={onMessageClick}
-            >
-            <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
-            <div>
-                <p className="text-lg font-semibold text-white mb-1">Nastya</p>
-                <p className="text-sm text-gray-400">Hello</p>
-            </div>
-            </div>
-        <div
-          className="flex flex-row gap-5 items-center cursor-pointer"
-          onClick={onMessageClick}
-        >
-          <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
-          <div>
-            <p className="text-lg font-semibold text-white mb-1">Anastasiia</p>
-            <p className="text-sm text-gray-400">hi</p>
-          </div>
-        </div>
       </div>
     </div>
   );

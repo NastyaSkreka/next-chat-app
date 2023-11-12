@@ -6,18 +6,24 @@ import GroupsContainer from "../_components/groups-container";
 import ParticipantsSidebar from "../_components/participants-sidebar";
 
 function Groups() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [sidebarOpen, setIsSidebarOpen] = useState("");
 
-  const handleSidebarToggle = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
+    console.log("isSidebarOpen", sidebarOpen);
+  
+    const handleSidebarToggle = (group) => {
+      if (sidebarOpen && sidebarOpen.name === group.name) {
+        // Если кликнули на ту же группу, закрываем Sidebar
+        setIsSidebarOpen("");
+      } else {
+        setIsSidebarOpen(group);
+      }
+    };
 
   return (
     <div className="flex overflow-hidden w-full min-h-screen">
-      <GroupSidebar onMessageClick={handleSidebarToggle} />
+      <GroupSidebar onMessageClick={(group) => handleSidebarToggle(group)} />
       <GroupsContainer />
-      {isSidebarOpen && <ParticipantsSidebar />}
+      {sidebarOpen && <ParticipantsSidebar />}
     </div>
   );
 }

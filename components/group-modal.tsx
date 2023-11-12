@@ -3,7 +3,6 @@ import { ConversationState} from '@/app/redux/features/users/conversationSlice';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from './ui/button';
-import { addGroup } from '@/app/redux/features/users/groupSlice';
 import { useSocketContext } from '@/providers/socket-provider';
 
 
@@ -19,10 +18,11 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
     const [selectedUsers, setSelectedUsers] = useState([]);
 
     const { socket } = useSocketContext();
-
+    console.log("selectedUsers", selectedUsers)
     const users = useSelector(
       (state: { conversation: ConversationState }) => state.conversation.sidebarData,
     );
+    console.log("users", users)
   
     const handleGroupNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setGroupName(event.target.value);
@@ -34,7 +34,10 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
         } else {
           setSelectedUsers([...selectedUsers, user]);
         }
-      };
+      }; 
+
+      
+      
   
     const handleSubmit = () => {
         const newGroup = {
@@ -70,8 +73,10 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
               key={item.socketId}
               onClick={() => handleUserSelection(item)}
               className={`flex items-center ${
-                selectedUsers.includes(item.socketId) ? 'bg-neutral-900 text-white rounded-lg' : ''
+                selectedUsers.some((selectedUser) => selectedUser.socketId === item.socketID) ? 'bg-neutral-900 text-white rounded-lg'
+                  : ''
               }`}
+                            
             >
               <div className="flex w-full flex-row gap-5 items-center cursor-pointer">
                 <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />

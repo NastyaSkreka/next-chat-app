@@ -45,14 +45,12 @@ io.on("connection", (socket) => {
         io.emit("responseNewUser", users);
       });
   
-
       socket.on('createGroup', (newGroup) => {
         newGroup.id = generateUniqueId();
       
         groups.push(newGroup);
       
         console.log('inside createGroup');
-
         console.log(newGroup);
 
         socket.emit('newGroup', newGroup, error => {

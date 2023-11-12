@@ -6,24 +6,27 @@ interface Group {
   creator: string;
   members: string[];
 }
-interface GroupState {
+export interface GroupState {
   groups: Group[];
+  selectedGroup: string | null;
 }
 const initialState: GroupState = {
   groups: [], 
+  selectedGroup: null,
 };
 const groupSlice = createSlice({
   name: "group",
   initialState: initialState,
   reducers: {
     addGroup: (state, action: PayloadAction<Group>) => {
-        console.log("state.groups", state.groups)
       state.groups.push(action.payload);
-      console.log(state.groups)
+    },
+    selectGroup: (state, action: PayloadAction<string | null>) => {
+        state.selectedGroup = action.payload;
     },
   },
 });
 
-export const { addGroup } = groupSlice.actions;
+export const { addGroup, selectGroup } = groupSlice.actions;
 
 export default groupSlice.reducer;
