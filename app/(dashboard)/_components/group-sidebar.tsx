@@ -18,7 +18,7 @@ interface GroupSidebarProps {
 type Group = {
     id: string;
     name: string;
-  };
+};
 
 const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
     const { socket } = useSocketContext();

@@ -29,16 +29,13 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
     };
     
     const handleUserSelection = (user) => {
-        if (selectedUsers.some((selectedUser) => selectedUser.socketID === user.socketID)) {
-          setSelectedUsers(selectedUsers.filter((selectedUser) => selectedUser.socketID !== user.socketID));
+        if (selectedUsers.some((selectedUser) => selectedUser.socketId === user.socketId)) {
+          setSelectedUsers(selectedUsers.filter((selectedUser) => selectedUser.socketId !== user.socketId));
         } else {
           setSelectedUsers([...selectedUsers, user]);
         }
       }; 
-
       
-      
-  
     const handleSubmit = () => {
         const newGroup = {
           name: groupName,
@@ -70,13 +67,12 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
   
           {users.map((item) => (
             <div
-              key={item.socketId}
+            key={item.socketID}
               onClick={() => handleUserSelection(item)}
               className={`flex items-center ${
-                selectedUsers.some((selectedUser) => selectedUser.socketId === item.socketID) ? 'bg-neutral-900 text-white rounded-lg'
+                selectedUsers.some((selectedUser) => selectedUser.socketId === item.socketId) ? 'bg-neutral-900 text-white rounded-lg'
                   : ''
               }`}
-                            
             >
               <div className="flex w-full flex-row gap-5 items-center cursor-pointer">
                 <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
@@ -102,7 +98,3 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
   
   export default GroupModal;
   
-
-
-
-

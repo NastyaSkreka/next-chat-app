@@ -18,7 +18,6 @@ function ParticipantsSidebar() {
         console.log("remove user")
       };
 
-
   return (
     <AnimatePresence>
     <motion.div

@@ -12,7 +12,6 @@ function Groups() {
   
     const handleSidebarToggle = (group) => {
       if (sidebarOpen && sidebarOpen.name === group.name) {
-        // Если кликнули на ту же группу, закрываем Sidebar
         setIsSidebarOpen("");
       } else {
         setIsSidebarOpen(group);
