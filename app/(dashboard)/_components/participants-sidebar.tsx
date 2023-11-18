@@ -1,23 +1,45 @@
-import { GroupState } from '@/app/redux/features/users/groupSlice';
+"use client"
+import { selectGroup } from '@/app/redux/features/users/groupSlice';
 import AddUser from '@/public/addUser';
+import { useSocketContext } from '@/providers/socket-provider';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSelector } from 'react-redux';
+import { useSelector,  useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import MembersList from './members-list';
+
 
 function ParticipantsSidebar() {
+    const { socket } = useSocketContext();
+    const dispatch = useDispatch();
 
     const selectedGroup = useSelector((state: { groups: { selectedGroup: string | null } }) => state.groups.selectedGroup);
     console.log( "selectedGroup", selectedGroup)
+  
+    useEffect(() => {
+        console.log('Socket connection status:', socket.connected);
 
-    const currentUser  = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
+        console.log("inside useEffect")
 
-    const isGroupCreator = (group, currentUser) => {
-        return group.creator === currentUser;
-    };
-
-    const handleRemoveMember = () => {
-        console.log("remove user")
-      };
-
+        socket.on('memberDeleted', ({ groupId, removedMember }) => {
+              console.log("inside socket");
+              console.log(groupId, removedMember);  
+              
+      if (selectedGroup && selectedGroup.id === groupId) {
+          const updatedMembersArray = selectedGroup.members.filter(member => member.socketId !== removedMember.socketId);
+            dispatch(selectGroup({
+              id: groupId,
+              name: selectedGroup.name,
+              creator: selectedGroup.creator,
+              members: updatedMembersArray,
+            }));
+          } 
+        }); 
+        console.log('After socket.on');
+        return () => {
+          socket.off('delete');
+        };
+      }, [socket, dispatch]); 
+      
   return (
     <AnimatePresence>
     <motion.div
@@ -36,26 +58,7 @@ function ParticipantsSidebar() {
                     <p className="text-white text-lg">Participants</p>
                     <AddUser/>
                 </div>
-                <div className="flex flex-col space-y-7">
-                    { 
-                      selectedGroup.members.map((member) => (
-                        <div className="flex flex-row gap-5 items-center cursor-pointer">
-                        <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
-                        <div>
-                         <p className="text-base text-gray-400 " key={member.user}>{member.user} </p>  
-                        </div>
-                        {isGroupCreator(selectedGroup, currentUser) && (
-                      <button className='text-white'
-                        onClick={() => handleRemoveMember(member.id, member)}
-                      >
-                     
-                         delete
-                      </button>
-                    )}
-                    </div> 
-                      ))
-                    }
-                </div>
+                <MembersList selectedGroup={selectedGroup}/>
             </div>
         </>
     }

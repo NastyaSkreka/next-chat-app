@@ -34,7 +34,7 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
         } else {
           setSelectedUsers([...selectedUsers, user]);
         }
-      }; 
+    }; 
       
     const handleSubmit = () => {
         const newGroup = {
@@ -46,7 +46,7 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
         socket.emit('createGroup', newGroup);
     
         onClose();
-      };
+    };
   
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50">

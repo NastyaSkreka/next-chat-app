@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
       
       
         newGroup.members.forEach((member) => {
-            const userSocketId = users.find((user) => user.user === member.user).socketId;
+            const userSocketId = users.find((user) => user.user === member.user)?.socketId;
             if(!userSocketId) return;
 
             socket.to(userSocketId).emit('newGroup', newGroup, (error) => {
@@ -71,10 +71,29 @@ io.on("connection", (socket) => {
                 console.log("newGroup", newGroup)
             });
         });
-        
+      });
+
+      socket.on('deleteMember', ({ groupId, memberSocketId }) => {
+        const groupIndex = groups.findIndex((group) => group.id === groupId);
+      
+        if (groupIndex !== -1) {
+          const removedMemberIndex = groups[groupIndex].members.findIndex((member) => member.socketId === memberSocketId);
+      
+          if (removedMemberIndex !== -1) {
+            const removedMember = groups[groupIndex].members.splice(removedMemberIndex, 1)[0];
+      
+            //Всем участникам группы, кроме отправителя
+            socket.broadcast.to(groupId).emit('memberDeleted', { groupId, removedMember });
+            // Отправить событие отправителю
+            socket.emit('memberDeleted', { groupId, removedMember });
+      
+            console.log(('memberDeleted', { groupId, removedMember }))
+          }
+        }
       });
       
-  
+      
+      
     socket.on("disconnect", (socket) => {
         console.log("User Disconnected", socket);
         users.filter((user) => user.socketID !== socket.id);

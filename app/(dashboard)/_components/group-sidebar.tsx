@@ -64,6 +64,8 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
     setModalOpen(false);
 };
 
+
+
     return (
     <div className="w-[300px] bg-black p-5">
       <div className="flex flex-row gap-3 mb-7">
