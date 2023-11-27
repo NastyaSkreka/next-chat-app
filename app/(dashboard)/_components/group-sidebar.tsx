@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import Add from "@/public/add";
@@ -71,7 +70,6 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
     return (
     <div className="w-[300px] bg-black p-5">
       <div className="flex flex-row gap-3 mb-7">
-      <div className="flex flex-row gap-3 mb-7">
           <Input placeholder="Search for Conversations" 
           value={searchInput}
           onChange={handleSearchInputChange}
@@ -80,8 +78,7 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
           <Add/>
           </div>
           {isModalOpen && <GroupModal onClose={handleCloseModal} />}
-      </div>
-      </div>
+      </div>  
       <SwitchButtons />
       <div className="flex flex-col space-y-5">
         {

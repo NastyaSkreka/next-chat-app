@@ -4,7 +4,7 @@ import SwitchButtons from "@/components/switch-buttons";
 import { Input } from "@/components/ui/input";
 import Add from "@/public/add";
 import { useDispatch, useSelector } from "react-redux";
-import { ConversationState, setActiveUser, setSidebarData } from "@/app/redux/features/users/conversationSlice";
+import { ConversationState, setActiveUser } from "@/app/redux/features/users/conversationSlice";
 import GroupModal from "@/components/group-modal";
 
 const ConversationSidebar: React.FC = () => {
@@ -45,10 +45,6 @@ const ConversationSidebar: React.FC = () => {
                 value={searchInput}
                 onChange={handleSearchInputChange}
                 />
-                <div onClick={handleOpenModal}>
-                <Add/>
-                </div>
-                {isModalOpen && <GroupModal onClose={handleCloseModal} />}
             </div>
             <SwitchButtons />
 

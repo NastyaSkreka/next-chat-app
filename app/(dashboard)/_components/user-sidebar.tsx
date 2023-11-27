@@ -9,10 +9,13 @@ import Refresh from "@/public/refresh";
 import { useSocketContext } from "@/providers/socket-provider";
 import { setSidebarData } from "@/app/redux/features/users/conversationSlice";
 import { useDispatch } from "react-redux";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 function UserSidebar() {
   const { socket } = useSocketContext();
   const dispatch = useDispatch();
+  const currentRoute = usePathname();
   
   useEffect(() => {
       const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
@@ -51,8 +54,24 @@ function UserSidebar() {
         </div>
       </div>
       <div className="flex flex-col items-center space-y-7 mt-10">
-        <Chat />
-        <Group />
+      <Link href="/conversations">
+        <div className={
+            currentRoute === "/conversations"
+              ? "bg-gray-700 hover:bg-gray-700 rounded-xl p-1"
+              : ""
+          }>
+        <Chat/>
+        </div>
+      </Link>
+      <Link href="/groups">
+        <div className={
+            currentRoute === "/groups"
+              ? "bg-gray-700 hover:bg-gray-700 rounded-xl p-1"
+              : ""
+          }>
+          <Group />
+        </div>
+      </Link>
         <Refresh />
       </div>
     </div>

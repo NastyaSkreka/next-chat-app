@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 
 function GroupsContainer() {
   const dispatch = useDispatch();
+  const selectedGroup = useSelector((state: { groups: { selectedGroup: string | null } }) => state.groups.selectedGroup);
   const messages = useSelector(
     (state: { group: MessagesState }) => state.group.messages,
   );
@@ -37,14 +38,18 @@ function GroupsContainer() {
             </div>
           ))}
         </div>
-        <div className="mt-auto flex gap-2">
-          <Input
-            value={newMessageText}
-            onChange={(e) => setNewMessageText(e.target.value)}
-            placeholder="type message..."
-          />
-          <Button onClick={handleAddMessage}>Send</Button>
-        </div>
+        {
+            selectedGroup && (
+                <div className="mt-auto flex gap-2">
+                <Input
+                value={newMessageText}
+                onChange={(e) => setNewMessageText(e.target.value)}
+                placeholder="type message..."
+                />
+                <Button onClick={handleAddMessage}>Send</Button>
+            </div>
+            )
+        }
       </div>
     </div>
   );
