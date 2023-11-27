@@ -18,7 +18,7 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
     const [selectedUsers, setSelectedUsers] = useState([]);
 
     const { socket } = useSocketContext();
-    console.log("selectedUsers", selectedUsers)
+    
     const users = useSelector(
       (state: { conversation: ConversationState }) => state.conversation.sidebarData,
     );

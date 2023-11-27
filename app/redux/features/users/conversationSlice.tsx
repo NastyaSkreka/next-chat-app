@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface User {
     user: string;
     socketID: string;
+    status: string;
 }
 export interface ConversationState {
   activeUser: string | null;

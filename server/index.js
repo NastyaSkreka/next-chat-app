@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
 
     socket.on("newUser", (username) => {
         const isFound = users.find((user) => username === user.user);
-        const newUserData = { user: username, socketId: socket.id };
+        const newUserData = { user: username, socketId: socket.id, status:'active'};
 
         if(isFound) {
             users.map((user) => user.user === newUserData.user ? newUserData : user);
@@ -59,41 +59,45 @@ io.on("connection", (socket) => {
       
       
         newGroup.members.forEach((member) => {
-            const userSocketId = users.find((user) => user.user === member.user)?.socketId;
+            console.log(member);
+            const userSocketId = member?.socketId;
             if(!userSocketId) return;
-
-            socket.to(userSocketId).emit('newGroup', newGroup, (error) => {
-                if (error) {
-                    console.error(`Error sending 'newGroup' event to ${userSocketId}:`, error);
-                } else {
-                    console.log(`'newGroup' event sent successfully to ${userSocketId}`);
-                }
-                console.log("newGroup", newGroup)
-            });
+            console.log('sending to socket ', userSocketId);
+            io.to(userSocketId).emit('newGroup', newGroup);
         });
       });
 
       socket.on('deleteMember', ({ groupId, memberSocketId }) => {
         const groupIndex = groups.findIndex((group) => group.id === groupId);
-      
+    
         if (groupIndex !== -1) {
-          const removedMemberIndex = groups[groupIndex].members.findIndex((member) => member.socketId === memberSocketId);
-      
-          if (removedMemberIndex !== -1) {
-            const removedMember = groups[groupIndex].members.splice(removedMemberIndex, 1)[0];
-      
-            //Всем участникам группы, кроме отправителя
-            socket.broadcast.to(groupId).emit('memberDeleted', { groupId, removedMember });
-            // Отправить событие отправителю
-            socket.emit('memberDeleted', { groupId, removedMember });
-      
-            console.log(('memberDeleted', { groupId, removedMember }))
-          }
+            const removedMemberIndex = groups[groupIndex].members.findIndex((member) => member.socketId === memberSocketId);
+    
+            if (removedMemberIndex !== -1) {
+                groups[groupIndex].members[removedMemberIndex].status = "deleted";
+    
+                const updatedMembers = groups[groupIndex].members.filter(member => member.status !== 'deleted');
+    
+                console.log(memberSocketId)
+                groups[groupIndex].members.forEach((member) => {
+                    if (member.socketId && member.socketId !== memberSocketId) { 
+                        socket.to(member.socketId).emit('groupUpdated', { groupId, members: updatedMembers });
+                        console.log('Sending groupUpdated event to' + member?.socketId || 'Not found'); 
+                    }
+
+                });
+
+
+                io.to(memberSocketId).emit('userRemovedFromGroup');
+
+                socket.emit('groupUpdated', { groupId, members: updatedMembers });
+    
+                console.log('groupUpdated', { groupId, members: updatedMembers });
+            }
         }
-      });
-      
-      
-      
+    });
+
+  
     socket.on("disconnect", (socket) => {
         console.log("User Disconnected", socket);
         users.filter((user) => user.socketID !== socket.id);

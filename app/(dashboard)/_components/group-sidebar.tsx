@@ -26,9 +26,11 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
     const dispatch = useDispatch()
-    const groups = useSelector(
+   const groups = useSelector(
         (state: { groups: GroupState }) => state.groups.groups,
-    ); 
+    );  
+ 
+    console.log("groups", groups)
 
     const handleGroupClick = (group) => {
         dispatch(selectGroup(group));
@@ -37,7 +39,9 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
         console.log(group, "click")
     };
 
+    
     useEffect(() => {
+        console.log('group-sidebar')
         socket.on('newGroup', (newGroup) => {
           console.log('inside newGroup', newGroup);
           const groupExists = groups.find((group) => group.name === newGroup.name);
@@ -62,9 +66,7 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
 
   const handleCloseModal = () => {
     setModalOpen(false);
-};
-
-
+    };
 
     return (
     <div className="w-[300px] bg-black p-5">
@@ -83,24 +85,30 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
       <SwitchButtons />
       <div className="flex flex-col space-y-5">
         {
-          groups.map((group:any) => (
-            <div
-            key={group.name}
-            className={`flex flex-row gap-5 items-center cursor-pointer ${
-                selectedGroup === group.name ? 'bg-neutral-900 text-white rounded-lg' : ""
-            }`}
-            onClick={() => {
-                handleGroupClick(group);
-              }}
-            >
-            <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
-            <div>
-             <p className="text-lg font-semibold text-white mb-1">{group.name}</p>
-             <p className="text-lg font-semibold text-white mb-1">Message</p>
-            </div>
-            </div>
-          ))  
-        }
+            groups.map((group) =>(
+                    <div
+                      key={group.name}
+                      className={`flex flex-row gap-5 items-center cursor-pointer ${
+                        selectedGroup === group.name ? 'bg-neutral-900 text-white rounded-lg' : ""
+                      }`}
+                      onClick={() => handleGroupClick(group)}
+                    >
+                      <div className="w-16 h-16 bg-zinc-300 rounded-full overflow-hidden" />
+                      <div>
+                        <p className="text-lg font-semibold text-white mb-1">{group.name}</p>
+                        {group.members && group.members.length !== 0 ? 
+                            (
+                                group.members.map((member) => (
+                                    <p className="text-lg font-semibold text-white mb-1">{member.user}</p>
+                                ))
+                            ) : (
+                                <p className="text-lg font-semibold text-white mb-1">{group.members?.user}</p>
+                            )}
+                      </div>
+                    </div>
+                  )
+              )             
+        } 
       </div>
     </div>
   );

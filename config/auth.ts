@@ -9,7 +9,7 @@ const users: User[] = [
     password: "123123123",
   },
   {
-    username: "Nastya",
+    username: "nastya",
     password: "123123123",
   }
 ];

@@ -10,6 +10,7 @@ interface Group {
 interface Member {
     user: string;
     socketId: string;
+    status: string;
 }
 
 export interface GroupState {
@@ -30,11 +31,23 @@ const groupSlice = createSlice({
     selectGroup: (state, action: PayloadAction<string | null>) => {
         state.selectedGroup = action.payload;
     },
-    
-  },
+    updateGroupMembers: (state, action) => {
+        const { groupId, updatedMembers } = action.payload;
+        const groupIndex = state.groups.findIndex((group) => group.id === groupId);
+  
+        if (groupIndex !== -1) {
+          const updatedGroup = {
+            ...state.groups[groupIndex],
+            members: updatedMembers,
+          };
+  
+          state.groups[groupIndex] = updatedGroup;
+        }
+      },
+    },
 });
 
-export const { addGroup, selectGroup } = groupSlice.actions;
+export const { addGroup, selectGroup,updateGroupMembers} = groupSlice.actions;
 
 export default groupSlice.reducer;
 
