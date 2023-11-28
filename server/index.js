@@ -97,6 +97,32 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on('addMember', ({ groupId, user }) => {
+        const groupIndex = groups.findIndex((group) => group.id === groupId);
+    
+        if (groupIndex !== -1) {
+            const existingMember = groups[groupIndex].members.find((member) => member.socketId === user.socketId);
+    
+            if (!existingMember) {
+                groups[groupIndex].members.push({
+                    user: user.user,
+                    socketId: user.socketId,
+                    status: 'active',
+                });
+    
+                const updatedMembers = groups[groupIndex].members.filter(member => member.status !== 'deleted');
+    
+                groups[groupIndex].members.forEach((member) => {
+                    socket.to(member.socketId).emit('groupUpdated', { groupId, members: updatedMembers });
+                });
+    
+                socket.emit('groupUpdated', { groupId, members: updatedMembers });
+    
+                console.log('groupUpdated', { groupId, members: updatedMembers });
+            }
+        }
+    });
+
   
     socket.on("disconnect", (socket) => {
         console.log("User Disconnected", socket);

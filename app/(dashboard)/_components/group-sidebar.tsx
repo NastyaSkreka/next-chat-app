@@ -8,7 +8,7 @@ import GroupModal from "@/components/group-modal";
 import { useDispatch, useSelector } from "react-redux";
 import { GroupState, addGroup, selectGroup } from "@/app/redux/features/users/groupSlice";
 
- const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
+const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
 interface GroupSidebarProps {
   onMessageClick: () => void;
