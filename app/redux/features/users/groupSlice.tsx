@@ -43,11 +43,18 @@ const groupSlice = createSlice({
   
           state.groups[groupIndex] = updatedGroup;
         }
-      },
     },
+    updateGroups: (state, action: PayloadAction<Group[]>) => {
+        return {
+          ...state,
+          groups: action.payload,
+          selectedGroup: null,
+        };
+    },
+} 
 });
 
-export const { addGroup, selectGroup,updateGroupMembers} = groupSlice.actions;
+export const { addGroup, selectGroup,updateGroupMembers,updateGroups} = groupSlice.actions;
 
 export default groupSlice.reducer;
 

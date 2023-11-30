@@ -17,7 +17,7 @@ function MembersList({selectedGroup}){
     };
 
     return (
-        <div className="flex flex-col space-y-7">
+        <div className="flex flex-grow flex-col py-7 space-y-5">
       { 
             selectedGroup.members.map((member) => (
                 !isGroupCreator(selectedGroup, member.user) && (
