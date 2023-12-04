@@ -9,24 +9,18 @@ author: string;
 }
 
 export interface MessagesState {
-  messages: Message[];
-}
-
-export const initialState: MessagesState = {
-  messages: [],
-};
+    messages: { userName: string; messages: Message[] }[];
+  }
+  
+  export const initialState: MessagesState = {
+    messages: [],
+  };
+  
 
 const groupMessagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-   addMessage: (state, action) => {
-      const newMessage = {
-        id: uuidv4(),
-        text: action.payload,
-      };
-      state.messages.push(newMessage);
-    },
     editMessage: (state, action) => {
       const { id, newText } = action.payload;
       const messageToEdit = state.messages.find((message) => message.id === id);

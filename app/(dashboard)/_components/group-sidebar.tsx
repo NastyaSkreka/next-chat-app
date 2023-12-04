@@ -38,6 +38,12 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
         console.log(group, "click")
     };
 
+    useEffect(() => {
+        socket.on('hello', (id) => {
+            console.log(id);
+        })
+    }, [])
+
     
     useEffect(() => {
         console.log('group-sidebar')
@@ -79,7 +85,7 @@ const GroupSidebar: React.FC<GroupSidebarProps> = ({ onMessageClick }) => {
           </div>
           {isModalOpen && <GroupModal onClose={handleCloseModal} />}
       </div>  
-      <SwitchButtons />
+   
       <div className="flex flex-col space-y-5">
         {
             groups.map((group) =>(

@@ -21,7 +21,6 @@ const privateMessagesSlice = createSlice({
   reducers: {
     addMessage: (state, action) => {
         const findIndex = state.messages.findIndex((obj) => obj.userName === action.payload.recipient);
-        console.log(findIndex);
         if(findIndex < 0) {
           const newMessage = {
             userName: action.payload.recipient,
@@ -32,8 +31,7 @@ const privateMessagesSlice = createSlice({
         };
         state.messages[findIndex].messages.push(action.payload.messageData);
         return state;
-      },
-      
+    },
     editMessage: (state, action) => {
         const messages = state.messages.find((message) => message.userName === action.payload.activeUser)?.messages;
         const messageToEdit = messages?.find((message) => message.id === action.payload.id);

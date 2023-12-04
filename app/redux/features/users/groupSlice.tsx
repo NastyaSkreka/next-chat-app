@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Group {
+export interface Message {
+    author: string;
     id: string;
-    name: string;
-    creator: string;
-    members: Array<Member>;
-  }
+    text: string;
+    time: string;
+}
 
 interface Member {
     user: string;
@@ -13,9 +13,17 @@ interface Member {
     status: string;
 }
 
+interface Group {
+    id: string;
+    name: string;
+    creator: string;
+    members: Member[];
+    messages: Message[];
+}
+
 export interface GroupState {
   groups: Group[];
-  selectedGroup: string | null;
+  selectedGroup: Group | null;
 }
 const initialState: GroupState = {
   groups: [], 
@@ -28,7 +36,7 @@ const groupSlice = createSlice({
     addGroup: (state, action: PayloadAction<Group>) => {
       state.groups.push(action.payload);
     },
-    selectGroup: (state, action: PayloadAction<string | null>) => {
+    selectGroup: (state, action: PayloadAction<Group>) => {
         state.selectedGroup = action.payload;
     },
     updateGroupMembers: (state, action) => {
@@ -51,10 +59,26 @@ const groupSlice = createSlice({
           selectedGroup: null,
         };
     },
+    addMessage: (state, action) => {
+        const { groupId, messageData } = action.payload;
+        const groupIndex = state.groups.findIndex((group) => group.id === groupId);
+  
+        if (groupIndex !== -1) {
+          const messages = state.groups[groupIndex].messages;
+          const newMessages = [...messages, messageData];
+          state.groups[groupIndex].messages = newMessages;
+        }
+    }, 
+    deleteGroup: (state, action: PayloadAction<string>) => {
+        const groupId = action.payload;
+        const newGroups = state.groups.filter((group) => group.id !== groupId);
+        state.groups = newGroups;
+        state.selectedGroup = null;
+    }
 } 
 });
 
-export const { addGroup, selectGroup,updateGroupMembers,updateGroups} = groupSlice.actions;
+export const { addGroup, selectGroup,updateGroupMembers,updateGroups, addMessage, deleteGroup} = groupSlice.actions;
 
 export default groupSlice.reducer;
 

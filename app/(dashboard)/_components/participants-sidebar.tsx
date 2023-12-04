@@ -1,5 +1,5 @@
 "use client"
-import { selectGroup, updateGroupMembers, updateGroups } from '@/app/redux/features/users/groupSlice';
+import { deleteGroup, selectGroup, updateGroupMembers, updateGroups } from '@/app/redux/features/users/groupSlice';
 import AddUser from '@/public/addUser';
 import { useSocketContext } from '@/providers/socket-provider';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,18 +7,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import MembersList from './members-list';
 import AddMembersModal from '@/components/addmembers-modal';
-import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
+const currentUser = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
 function ParticipantsSidebar() {
     const [isModalOpen, setModalOpen] = useState(false);
     const { socket } = useSocketContext();
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const selectedGroup = useSelector((state: { groups: { selectedGroup: string | null } }) => state.groups.selectedGroup);
     console.log("selectedGroup", selectedGroup)
 
-  
+    // 5 mins and i will come back now it's working try to test it again till i come back.. 
+    // okay ? ok 
     useEffect(() => {
         socket.on('groupUpdated', ({ groupId, members }) => {
             console.log("inside socket");
@@ -35,12 +38,13 @@ function ParticipantsSidebar() {
         });
 
         socket.on('userRemovedFromGroup', () => {
-            window.location.href = '/groups';
+            // window.location.href = '/groups';
+            router.push('/groups');
         });
 
-        socket.on('groupDeleted', (deletedGroup) => {
-            console.log("deletedGroup", deletedGroup)
-            dispatch(updateGroups(deletedGroup));
+        socket.on('groupDeleted', ({id}) => {
+            console.log("deletedGroup", id)
+            dispatch(deleteGroup(id as string));
             
         });
 
@@ -52,9 +56,10 @@ function ParticipantsSidebar() {
         };
     }, [socket, dispatch, selectedGroup]);
 
-    const handleDeleteGroup = (groupId) => {
+    const handleDeleteGroup = (groupId: string) => {
         console.log("selectedGroup.id", groupId)
       //console.log(typeof(groupId)) 
+      dispatch(deleteGroup(groupId));
         socket.emit('deleteGroup', { groupId });
       };
       
@@ -66,6 +71,10 @@ function ParticipantsSidebar() {
     const handleCloseModal = () => {
       setModalOpen(false);
       };
+
+      const userIsGroupCreator = (group) => {
+        return currentUser === group.creator;
+      }
     
 
     return (
@@ -90,12 +99,17 @@ function ParticipantsSidebar() {
                                 {isModalOpen && <AddMembersModal onClose={handleCloseModal}  selectedGroup={selectedGroup}/>}
                             </div>
                             <MembersList selectedGroup={selectedGroup} />
+                                {
+                                userIsGroupCreator(selectedGroup) && (
                                     <div onClick={() => handleDeleteGroup(selectedGroup.id)}
                                     className='flex-end'>
                                     <button  className=" hover:bg-red-800 w-full text-lg bg-neutral-800 text-white rounded">
-                                      Delete
+                                        Delete
                                     </button>
                                 </div>
+                                )
+                            }
+                                 
                         </div>    
                     </>
                    

@@ -9,6 +9,7 @@ function DashboardLayout({ children }: PropsWithChildren) {
     <SocketProvider>
       <div className="flex bg-black w-full">
         <UserSidebar />
+        {/* <SocketComponent /> */}
         {children}
       </div>
     </SocketProvider>

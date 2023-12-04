@@ -46,7 +46,6 @@ const ConversationSidebar: React.FC = () => {
                 onChange={handleSearchInputChange}
                 />
             </div>
-            <SwitchButtons />
 
             <div className="flex flex-col space-y-5 ">
                 {filteredSidebarData.map((item, index) => (

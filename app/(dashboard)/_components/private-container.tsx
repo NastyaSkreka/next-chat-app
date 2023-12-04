@@ -7,11 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import SendMessageInput from "./send-message-input";
 import { useSocketContext } from "@/providers/socket-provider";
 
-
 const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
 const PrivateContainer: React.FC = () =>  {
-
     const dispatch = useDispatch();
     const activeUser = useSelector(
         (state: { conversation: ConversationState }) => state.conversation.activeUser,

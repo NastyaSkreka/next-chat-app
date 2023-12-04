@@ -6,7 +6,8 @@ import { deleteMessage, editMessage } from "@/app/redux/features/messages/privat
 import { RootState } from "@/app/redux/store";
 
 interface MessageOptionsProps {
-  message: Message;
+//   message: Message & { author: { username: string } };
+message: any;
   username:string | null;
 }
 
@@ -35,14 +36,14 @@ const MessageOptions: FC<MessageOptionsProps> = ({ message, username }) => {
 
   return (
     <div>
-            {message.author === username ? (
+            {message.author.username !== username ? (
                  <div
                  className="flex flex-row gap-5 items-center">
                  <div
                  className="w-16 h-16 bg-gray-300 rounded-full overflow-hidden"
                  />
                  <div className="bg-gray-300 p-3 rounded-lg">
-                 <p className="text-lg font-semibold mb-1">{message.author}</p>
+                 <p className="text-lg font-semibold mb-1">{message.author.username}</p>
                  <p className="text-sm">{message.text}</p>
                  <p className="text-xs mt-1">{message.time}</p>
                  </div>
