@@ -1,7 +1,7 @@
 "use client"
-import { ConversationState} from '@/app/redux/features/users/conversationSlice';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { ConversationState, User} from '@/app/redux/features/users/conversationSlice';
+import React, { useState } from 'react';
+import {  useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import { useSocketContext } from '@/providers/socket-provider';
 
@@ -15,7 +15,7 @@ const username = typeof localStorage !== 'undefined' ? localStorage.getItem('use
 
 const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
     const [groupName, setGroupName] = useState('');
-    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
     const { socket } = useSocketContext();
 
@@ -29,7 +29,7 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
       setGroupName(event.target.value);
     };
     
-    const handleUserSelection = (user) => {
+    const handleUserSelection = (user:User) => {
         if (selectedUsers.some((selectedUser) => selectedUser.socketId === user.socketId)) {
           setSelectedUsers(selectedUsers.filter((selectedUser) => selectedUser.socketId !== user.socketId));
         } else {
@@ -52,8 +52,8 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
   
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="fixed inset-0 bg-black opacity-50"></div>
-        <div className="space-y-7 bg-black w-96 mx-auto rounded shadow-md p-4 relative">
+        <div className="fixed inset-0 bg-white opacity-20"></div>
+        <div className="space-y-7 bg-black w-96 mx-auto rounded-md shadow-md p-4  relative">
           <h2 className="text-lg text-white font-semibold text-center">Create a Group</h2>
           <label className="block text-sm text-white font-medium" htmlFor="groupName">
             Group Name:
@@ -69,7 +69,7 @@ const GroupModal: React.FC<GroupModalProps> = ({ onClose }) => {
   
           {users.map((item) => (
             <div
-            key={item.socketID}
+            key={item.socketId}
               onClick={() => handleUserSelection(item)}
               className={`flex items-center ${
                 selectedUsers.some((selectedUser) => selectedUser.socketId === item.socketId) ? 'bg-neutral-900 text-white rounded-lg'

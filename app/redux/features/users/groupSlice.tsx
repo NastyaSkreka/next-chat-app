@@ -7,13 +7,13 @@ export interface Message {
     time: string;
 }
 
-interface Member {
+export interface Member {
     user: string;
     socketId: string;
     status: string;
 }
 
-interface Group {
+export interface Group {
     id: string;
     name: string;
     creator: string;

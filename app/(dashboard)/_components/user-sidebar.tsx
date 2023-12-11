@@ -17,12 +17,12 @@ function UserSidebar() {
   const dispatch = useDispatch();
   const currentRoute = usePathname();
   
-  useEffect(() => {
+ /* useEffect(() => {
       const username = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
       socket.emit('newUser', username);
-  },[]);
+  },[]); */
 
-  useEffect(() => {
+ /* useEffect(() => {
     const username = localStorage.getItem('username') || '';
 
     socket.on('connectedUsers', (users) => {
@@ -36,14 +36,14 @@ function UserSidebar() {
     });
 
     return () => {
-      // socket.off('getConnectedUsers');
       socket.off('responseNewUser');
       socket.off('connectedUsers');
     };
-  }, [socket]);
+  }, [socket]); */
 
   return (
-    <div className="w-40 bg-black ">
+    <div className="w-40 bg-black  relative">
+          <div className="absolute inset-y-0 right-0 w-0.5 bg-white shadow-md"></div>
       <div className="flex justify-center py-5">
         <div className="w-16 h-16 rounded-full overflow-hidden">
           <Image
@@ -74,6 +74,7 @@ function UserSidebar() {
       </Link>
         <Refresh />
       </div>
+
     </div>
   );
 }

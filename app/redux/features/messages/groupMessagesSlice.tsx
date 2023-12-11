@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
 
 export interface Message {
-author: string;
+   author: string;
   id: string;
   text: string;
   time: string;
@@ -36,6 +35,6 @@ const groupMessagesSlice = createSlice({
     },
   },
 });
-export const { editMessage, deleteMessage,  addMessage } = groupMessagesSlice.actions;
+export const { editMessage, deleteMessage } = groupMessagesSlice.actions;
 
 export default groupMessagesSlice.reducer;

@@ -1,5 +1,5 @@
 "use client"
-import { deleteGroup, selectGroup, updateGroupMembers, updateGroups } from '@/app/redux/features/users/groupSlice';
+import { Group, deleteGroup, selectGroup, updateGroupMembers} from '@/app/redux/features/users/groupSlice';
 import AddUser from '@/public/addUser';
 import { useSocketContext } from '@/providers/socket-provider';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,11 +18,9 @@ function ParticipantsSidebar() {
     const router = useRouter();
 
     const selectedGroup = useSelector((state: { groups: { selectedGroup: string | null } }) => state.groups.selectedGroup);
-    console.log("selectedGroup", selectedGroup)
+    console.log("selectedGroup",selectedGroup)
 
-    // 5 mins and i will come back now it's working try to test it again till i come back.. 
-    // okay ? ok 
-    useEffect(() => {
+    /*useEffect(() => {
         socket.on('groupUpdated', ({ groupId, members }) => {
             console.log("inside socket");
             console.log('groupUpdated useEffect', groupId, members);           
@@ -38,7 +36,6 @@ function ParticipantsSidebar() {
         });
 
         socket.on('userRemovedFromGroup', () => {
-            // window.location.href = '/groups';
             router.push('/groups');
         });
 
@@ -54,11 +51,10 @@ function ParticipantsSidebar() {
             socket.off('groupUpdated');
             socket.off('userRemovedFromGroup');
         };
-    }, [socket, dispatch, selectedGroup]);
+    }, [socket, dispatch, selectedGroup]);  */
 
     const handleDeleteGroup = (groupId: string) => {
         console.log("selectedGroup.id", groupId)
-      //console.log(typeof(groupId)) 
       dispatch(deleteGroup(groupId));
         socket.emit('deleteGroup', { groupId });
       };
@@ -72,7 +68,7 @@ function ParticipantsSidebar() {
       setModalOpen(false);
       };
 
-      const userIsGroupCreator = (group) => {
+      const userIsGroupCreator = (group: Group) => {
         return currentUser === group.creator;
       }
     
@@ -86,32 +82,32 @@ function ParticipantsSidebar() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
             >
                 {selectedGroup &&
-                    <>
-                        <div className=" flex flex-col flex-1  space-y-5 h-[50px]  bg-black p-4 w-full">
-                            <p className="text-white text-lg">Admin: {selectedGroup.creator}</p>
-                        </div>
-                        <div className="w-[250px] flex flex-col  bg-black p-5 mt-5">
-                            <div className='flex  flex-row gap-7 justify-between items-center mb-10'>
-                                <p className="text-white text-lg">Participants</p>
-                                <div onClick={handleOpenModal}>
-                                <AddUser />
-                                </div>
-                                {isModalOpen && <AddMembersModal onClose={handleCloseModal}  selectedGroup={selectedGroup}/>}
-                            </div>
-                            <MembersList selectedGroup={selectedGroup} />
-                                {
-                                userIsGroupCreator(selectedGroup) && (
-                                    <div onClick={() => handleDeleteGroup(selectedGroup.id)}
-                                    className='flex-end'>
-                                    <button  className=" hover:bg-red-800 w-full text-lg bg-neutral-800 text-white rounded">
-                                        Delete
-                                    </button>
-                                </div>
-                                )
-                            }
-                                 
-                        </div>    
-                    </>
+                   <div className='relative flex flex-col h-screen'>
+                   <div></div>
+                   <div className="flex flex-col space-y-5 bg-black p-4 w-full">
+                     <p className="text-white text-lg">Admin: {selectedGroup.creator}</p>
+                   </div>
+                   <div className="absolute inset-x-0 top-20 h-0.5 bg-white shadow-md"></div>
+                   <div className="w-[250px] flex flex-col bg-black p-5 mt-10 flex-1">
+                     <div className='flex flex-row gap-7 justify-between items-center mb-10'>
+                       <p className="text-white text-lg">Participants</p>
+                       <div onClick={handleOpenModal}>
+                         <AddUser />
+                       </div>
+                       {isModalOpen && <AddMembersModal onClose={handleCloseModal} selectedGroup={selectedGroup} />}
+                     </div>
+                     <MembersList selectedGroup={selectedGroup} />
+                     {userIsGroupCreator(selectedGroup) && (
+                       <div onClick={() => handleDeleteGroup(selectedGroup.id)} className='mt-auto'>
+                         <button className="hover:bg-red-800 w-full text-lg bg-neutral-800 text-white rounded">
+                           Delete
+                         </button>
+                       </div>
+                     )}
+                   </div>
+                 </div>
+                  
+                    
                    
                 }
             </motion.div>

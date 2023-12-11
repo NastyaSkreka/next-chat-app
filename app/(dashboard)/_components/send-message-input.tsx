@@ -6,7 +6,7 @@ import { RootState } from '@/app/redux/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSocketContext } from '@/providers/socket-provider';
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -24,13 +24,18 @@ function SendMessageInput() {
 
     const { socket } = useSocketContext();
 
-    const messages = useSelector((state: RootState) => state.private.messages).find((messageObj) => messageObj.userName === activeUser)?.messages || [];
+
+    const author = {
+        username: localStorage.getItem("username"), 
+        socketId: socket.id, 
+      }; 
+      
 
     const handleAddMessage = () => {
       if (!newMessageText) return;
       const messageData = {
             id: messageId, 
-            author: username,
+            author,
             text: newMessageText, 
             time: 
                 new Date(Date.now()).getHours() + 
@@ -38,7 +43,6 @@ function SendMessageInput() {
                 new Date(Date.now()).getMinutes(), 
       }
       dispatch(addMessage({messageData, recipient: activeUser }));
-      console.log(messages);
       socket.emit("send_message",messageData );
       setNewMessageText("");
   };

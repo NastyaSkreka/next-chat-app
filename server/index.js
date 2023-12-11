@@ -26,7 +26,6 @@ io.on("connection", (socket) => {
     console.log("inside send_message");
     io.emit("receive_message", data);
   });
-
   socket.on("sendMessageToGroup", ({ groupId, messageData }) => {
     console.log("messageData", messageData, groupId);
 
@@ -77,9 +76,6 @@ io.on("connection", (socket) => {
     console.log("inside createGroup");
     console.log(newGroup);
 
-    // socket.emit("newGroup", newGroup, (error) => {
-    //   console.log(error);
-    // });
 
     newGroup.members.forEach((member) => {
       console.log(member);
@@ -107,9 +103,7 @@ io.on("connection", (socket) => {
         console.log(memberSocketId);
         groups[groupIndex].members.forEach((member) => {
           if (member.socketId && member.socketId !== memberSocketId) {
-            socket
-              .to(member.socketId)
-              .emit("groupUpdated", { groupId, members: updatedMembers });
+            socket.to(member.socketId).emit("groupUpdated", { groupId, members: updatedMembers });
             console.log(
               "Sending groupUpdated event to" + member?.socketId || "Not found"
             );
@@ -126,35 +120,37 @@ io.on("connection", (socket) => {
   });
   socket.on("addMember", ({ groupId, user }) => {
     const groupIndex = groups.findIndex((group) => group.id === groupId);
-
+  
     if (groupIndex !== -1) {
-      const existingMember = groups[groupIndex].members.find(
+      const existingMemberIndex = groups[groupIndex].members.findIndex(
         (member) => member.socketId === user.socketId
       );
-
-      if (!existingMember) {
-        groups[groupIndex].members.push({
-          user: user.user,
-          socketId: user.socketId,
-          status: "active",
-        });
-
+  
+      if (existingMemberIndex === -1 || groups[groupIndex].members[existingMemberIndex].status === "deleted") {
+        if (existingMemberIndex === -1) {
+          groups[groupIndex].members.push({
+            user: user.user,
+            socketId: user.socketId,
+            status: "active",
+          });
+        } else {
+          groups[groupIndex].members[existingMemberIndex].status = "active";
+        }
+  
         const updatedMembers = groups[groupIndex].members.filter(
           (member) => member.status !== "deleted"
         );
-
+  
         groups[groupIndex].members.forEach((member) => {
-          socket
-            .to(member.socketId)
-            .emit("groupUpdated", { groupId, members: updatedMembers });
+           console.log(member)
+            socket.to(member.socketId).emit("groupUpdated", { groupId, members: updatedMembers });
         });
-
+  
         socket.emit("groupUpdated", { groupId, members: updatedMembers });
-
-        console.log("groupUpdated", { groupId, members: updatedMembers });
       }
     }
   });
+  
   socket.on("deleteGroup", ({ groupId }) => {
     const groupIndex = groups.findIndex((group) => group.id === groupId);
 

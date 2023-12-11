@@ -5,12 +5,15 @@ import GroupSidebar from "../_components/group-sidebar";
 import GroupsContainer from "../_components/groups-container";
 import ParticipantsSidebar from "../_components/participants-sidebar";
 
+type Group = {
+    id: string;
+    name: string;
+};
+
 function Groups() {
     const [sidebarOpen, setIsSidebarOpen] = useState("");
 
-    console.log("isSidebarOpen", sidebarOpen);
-  
-    const handleSidebarToggle = (group) => {
+    const handleSidebarToggle = (group:Group) => {
       if (sidebarOpen && sidebarOpen.name === group.name) {
         setIsSidebarOpen("");
       } else {

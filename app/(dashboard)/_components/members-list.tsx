@@ -1,18 +1,22 @@
 import Delete from '@/public/delete';
 import { useSocketContext } from '@/providers/socket-provider';
+import { Group } from '@/app/redux/features/users/groupSlice';
 
-function MembersList({selectedGroup}){
+interface MembersListProps {
+    selectedGroup: Group;
+  }
+
+function MembersList({selectedGroup}:MembersListProps){
 
     const { socket } = useSocketContext();
 
     const currentUser  = typeof localStorage !== 'undefined' ? localStorage.getItem('username') : null;
 
-    const isGroupCreator = (group, currentUser) => {
+    const isGroupCreator = (group:Group, currentUser: string | null) => {
         return group.creator === currentUser;
     };
 
-    const handleRemoveMember = (socketId) => {
-    console.log('Статус подключения сокета перед отправкой:', socket.connected);
+    const handleRemoveMember = (socketId:string) => {
     socket.emit('deleteMember', { groupId: selectedGroup.id, memberSocketId: socketId });
     };
 
